@@ -146,6 +146,36 @@ a reader off mid-onboarding. Their first frame is the launch-screen mirror, so
 the handoff stays seamless whichever one you pick. The example app switches
 between all four at runtime through `SplashScreen.show()`.
 
+#### First launch vs returning user
+
+Which intro runs, and whether one runs at all, is app code. Read the flag
+synchronously (MMKV, a Nitro store) so the decision is there on the first
+render; every intro starts from the launch-screen mirror, so switching later
+is possible but the synchronous path is seamless.
+
+```tsx
+const seenIntro = storage.getBoolean('intro.seen') ?? false
+
+<SplashOverlay ready={fontsLoaded && (seenIntro || introDone)} timeout={seenIntro ? 15_000 : 0}>
+  {(ctx) =>
+    seenIntro ? (
+      <LogoRevealIntro {...ctx} />
+    ) : (
+      <OnboardingIntro
+        {...ctx}
+        onDone={() => {
+          storage.set('intro.seen', true)
+          setIntroDone(true)
+        }}
+      />
+    )
+  }
+</SplashOverlay>
+```
+
+`SplashScreen.getLaunchInfo()` adds `coldStart`, `reload` and
+`systemSplashShown` for decisions that depend on how the app was started.
+
 Without children, `<SplashOverlay>` renders `<SplashMirror />`, an exact
 replica of the launch screen that fades out. Without `<SplashOverlay>` at
 all, the native overlay hides itself when React content first appears, like
