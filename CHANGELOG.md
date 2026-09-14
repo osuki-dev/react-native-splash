@@ -1,5 +1,11 @@
 # @osuki-dev/react-native-splash
 
+## 0.2.1
+
+### Patch Changes
+
+- [#7](https://github.com/osuki-dev/react-native-splash/pull/7) [`e6aed84`](https://github.com/osuki-dev/react-native-splash/commit/e6aed84a3b281a59e0c60602c36f01e86363888e) Thanks [@BANG88](https://github.com/BANG88)! - Android: a splash configured without an `image` now shows only the background colour. Without an explicit icon Android 12 falls back to the launcher icon, so a paper-only launch screen still flashed the app's mark before a themed overlay.
+
 ## 0.2.0
 
 ### Minor Changes
