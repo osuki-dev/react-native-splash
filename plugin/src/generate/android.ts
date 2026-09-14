@@ -87,7 +87,12 @@ export function buildRuntimeResources(splash: ResolvedSplash): string {
 /** The `<style>` items for `Theme.App.SplashScreen`. */
 export function splashStyleItems(splash: ResolvedSplash, hasLogo: boolean): Array<{ name: string; value: string }> {
   const items = [{ name: 'windowSplashScreenBackground', value: `@color/${BACKGROUND_COLOR}` }]
-  if (hasLogo) items.push({ name: 'windowSplashScreenAnimatedIcon', value: `@drawable/${LOGO_DRAWABLE}` })
+  // No logo means no logo: without the attribute Android 12 draws the launcher
+  // icon, which is exactly the mark a paper-only launch screen was chosen to avoid.
+  items.push({
+    name: 'windowSplashScreenAnimatedIcon',
+    value: hasLogo ? `@drawable/${LOGO_DRAWABLE}` : '@android:color/transparent',
+  })
   items.push({ name: 'postSplashScreenTheme', value: `@style/${splash.postTheme}` })
   // API 33+: keep the icon even when the launcher asks for a plain colour.
   items.push({ name: 'android:windowSplashScreenBehavior', value: 'icon_preferred' })
