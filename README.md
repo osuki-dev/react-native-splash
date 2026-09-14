@@ -265,7 +265,18 @@ loaded.
 - **Test in a dev client or release build.** Expo Go cannot load Nitro, and the
   dev client shows its own launch UI.
 - **iOS caches the launch snapshot.** Asset names carry a content hash so a
-  changed logo is picked up; if the simulator still shows the old art, reboot it.
+  changed logo is picked up. The simulator's renderer (`splashboardd`) also
+  caches the asset catalog per bundle id, so after a rebuild it can draw the
+  background without the logo; restart it with
+  `xcrun simctl spawn booted launchctl kickstart -k system/com.apple.splashboard`
+  (or reboot the simulator) and reinstall.
+- **Unsigned simulator builds launch black on iOS 26.** The system refuses to
+  render a launch storyboard from a bundle without a code-signature seal
+  (`Security error -67056`, then the app is denylisted for launch images), so
+  the app-open animation is black until the overlay attaches. Builds from
+  `expo run:ios` are signed; if yours is not (`CODE_SIGNING_ALLOWED=NO`),
+  `codesign --force --deep --sign - App.app` before installing. Devices are
+  never affected.
 - **Android 12+ only shows an icon.** `imageWidth` is the logo size inside a
   288 dp canvas. Warm starts do show the splash; launches from a notification
   or widget may not (`launchInfo.systemSplashShown`).
