@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Splash Example",
+    "slug": "react-native-splash-example",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "scheme": "rnsplashexample",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "dev.osuki.splash.example",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "dev.osuki.splash.example"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": { "deploymentTarget": "16.4" },
+          "android": { "minSdkVersion": 24 }
+        }
+      ],
+      [
+        "@osuki-dev/react-native-splash",
+        {
+          "backgroundColor": "#F7F3EC",
+          "image": "./assets/logo.png",
+          "imageWidth": 128,
+          "dark": {
+            "backgroundColor": "#050B12",
+            "image": "./assets/logo-dark.png"
+          },
+          "hideTimeout": 15000
+        }
+      ]
+    ]
+  }
+}
