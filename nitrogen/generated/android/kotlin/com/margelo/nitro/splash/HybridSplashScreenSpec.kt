@@ -52,6 +52,14 @@ abstract class HybridSplashScreenSpec: HybridObject() {
   @Keep
   abstract fun show(): Promise<Unit>
   
+  @DoNotStrip
+  @Keep
+  abstract fun setLaunchImage(image: SplashLaunchImageSpec): Unit
+  
+  @DoNotStrip
+  @Keep
+  abstract fun clearLaunchImage(): Unit
+  
   abstract fun setEventListener(listener: (event: SplashNativeEvent) -> Unit): Unit
   
   @DoNotStrip

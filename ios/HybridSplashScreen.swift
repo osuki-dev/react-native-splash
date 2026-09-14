@@ -38,6 +38,14 @@ final class HybridSplashScreen: HybridSplashScreenSpec {
     return promise
   }
 
+  func setLaunchImage(image: SplashLaunchImageSpec) throws {
+    manager.setLaunchImage(image)
+  }
+
+  func clearLaunchImage() throws {
+    manager.clearLaunchImage()
+  }
+
   func setEventListener(listener: @escaping (_ event: SplashNativeEvent) -> Void) throws {
     manager.eventListener = listener
   }

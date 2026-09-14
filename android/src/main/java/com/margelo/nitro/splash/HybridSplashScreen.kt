@@ -30,6 +30,10 @@ class HybridSplashScreen : HybridSplashScreenSpec() {
     return promise
   }
 
+  override fun setLaunchImage(image: SplashLaunchImageSpec) = SplashScreenManager.setLaunchImage(image)
+
+  override fun clearLaunchImage() = SplashScreenManager.clearLaunchImage()
+
   override fun setEventListener(listener: (event: SplashNativeEvent) -> Unit) {
     SplashScreenManager.eventListener = listener
   }

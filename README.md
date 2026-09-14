@@ -214,6 +214,30 @@ Events: `phase`, `nativeHidden`, `hidden` (with `durationMs`, a good
 `systemSplashShown` (Android 12+: false when started from a notification or
 widget), timestamps and the colour scheme at launch.
 
+### Launch image (themes, personalisation)
+
+The compiled launch assets are what the OS draws for the first frames of a
+cold start; nothing changes that at runtime. Everything the library draws
+after them can be replaced:
+
+```ts
+SplashScreen.setLaunchImage({
+  uri: 'file:///…/hero.png',      // an image on disk
+  backgroundColor: '#1B1F2A',      // its paper, light and dark
+  darkBackgroundColor: '#0B0D12',
+  widthFraction: 0.74,             // box width as a fraction of the window width…
+  maxWidth: 560,                   // …capped in points / dp
+  aspectRatio: 2,                  // box width / height
+})
+SplashScreen.clearLaunchImage()    // back to the compiled assets
+```
+
+From the next cold start on, the native overlay shows that picture on that
+paper the moment the OS launch screen ends, `getManifest().launchImage`
+reports it, and `useSplashMirror()` paints the identical first JS frame
+(`launchImageBox()` is the shared sizing rule). Persisted natively, so it is
+there before JavaScript is.
+
 ### `useSplashMirror()`
 
 Returns `{ container, logo, hasLogo, backgroundColor, manifest }` prop bags
@@ -241,7 +265,18 @@ loaded.
 - **Test in a dev client or release build.** Expo Go cannot load Nitro, and the
   dev client shows its own launch UI.
 - **iOS caches the launch snapshot.** Asset names carry a content hash so a
-  changed logo is picked up; if the simulator still shows the old art, reboot it.
+  changed logo is picked up. The simulator's renderer (`splashboardd`) also
+  caches the asset catalog per bundle id, so after a rebuild it can draw the
+  background without the logo; restart it with
+  `xcrun simctl spawn booted launchctl kickstart -k system/com.apple.splashboard`
+  (or reboot the simulator) and reinstall.
+- **Unsigned simulator builds launch black on iOS 26.** The system refuses to
+  render a launch storyboard from a bundle without a code-signature seal
+  (`Security error -67056`, then the app is denylisted for launch images), so
+  the app-open animation is black until the overlay attaches. Builds from
+  `expo run:ios` are signed; if yours is not (`CODE_SIGNING_ALLOWED=NO`),
+  `codesign --force --deep --sign - App.app` before installing. Devices are
+  never affected.
 - **Android 12+ only shows an icon.** `imageWidth` is the logo size inside a
   288 dp canvas. Warm starts do show the splash; launches from a notification
   or widget may not (`launchInfo.systemSplashShown`).

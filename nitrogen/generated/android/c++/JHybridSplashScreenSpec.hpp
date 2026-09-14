@@ -59,6 +59,8 @@ namespace margelo::nitro::splash {
     void preventAutoHide() override;
     std::shared_ptr<Promise<void>> hide(const SplashHideOptionsSpec& options) override;
     std::shared_ptr<Promise<void>> show() override;
+    void setLaunchImage(const SplashLaunchImageSpec& image) override;
+    void clearLaunchImage() override;
     void setEventListener(const std::function<void(const SplashNativeEvent& /* event */)>& listener) override;
     void clearEventListener() override;
 

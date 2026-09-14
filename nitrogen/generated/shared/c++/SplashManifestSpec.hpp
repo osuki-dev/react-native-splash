@@ -28,11 +28,14 @@
 #error NitroModules cannot be found! Are you sure you installed NitroModules properly?
 #endif
 
+// Forward declaration of `SplashLaunchImageSpec` to properly resolve imports.
+namespace margelo::nitro::splash { struct SplashLaunchImageSpec; }
 // Forward declaration of `SplashLogoSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashLogoSpec; }
 
-#include <string>
+#include "SplashLaunchImageSpec.hpp"
 #include <optional>
+#include <string>
 #include "SplashLogoSpec.hpp"
 
 namespace margelo::nitro::splash {
@@ -42,6 +45,7 @@ namespace margelo::nitro::splash {
    */
   struct SplashManifestSpec final {
   public:
+    std::optional<SplashLaunchImageSpec> launchImage     SWIFT_PRIVATE;
     std::string backgroundColor     SWIFT_PRIVATE;
     std::optional<std::string> darkBackgroundColor     SWIFT_PRIVATE;
     std::optional<SplashLogoSpec> logo     SWIFT_PRIVATE;
@@ -55,7 +59,7 @@ namespace margelo::nitro::splash {
 
   public:
     SplashManifestSpec() = default;
-    explicit SplashManifestSpec(std::string backgroundColor, std::optional<std::string> darkBackgroundColor, std::optional<SplashLogoSpec> logo, std::optional<SplashLogoSpec> darkLogo, double logoSizeRatio, double statusBarHeight, double navigationBarHeight, bool edgeToEdge, bool autoHide, double hideTimeoutMs): backgroundColor(backgroundColor), darkBackgroundColor(darkBackgroundColor), logo(logo), darkLogo(darkLogo), logoSizeRatio(logoSizeRatio), statusBarHeight(statusBarHeight), navigationBarHeight(navigationBarHeight), edgeToEdge(edgeToEdge), autoHide(autoHide), hideTimeoutMs(hideTimeoutMs) {}
+    explicit SplashManifestSpec(std::optional<SplashLaunchImageSpec> launchImage, std::string backgroundColor, std::optional<std::string> darkBackgroundColor, std::optional<SplashLogoSpec> logo, std::optional<SplashLogoSpec> darkLogo, double logoSizeRatio, double statusBarHeight, double navigationBarHeight, bool edgeToEdge, bool autoHide, double hideTimeoutMs): launchImage(launchImage), backgroundColor(backgroundColor), darkBackgroundColor(darkBackgroundColor), logo(logo), darkLogo(darkLogo), logoSizeRatio(logoSizeRatio), statusBarHeight(statusBarHeight), navigationBarHeight(navigationBarHeight), edgeToEdge(edgeToEdge), autoHide(autoHide), hideTimeoutMs(hideTimeoutMs) {}
 
   public:
     friend bool operator==(const SplashManifestSpec& lhs, const SplashManifestSpec& rhs) = default;
@@ -71,6 +75,7 @@ namespace margelo::nitro {
     static inline margelo::nitro::splash::SplashManifestSpec fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       jsi::Object obj = arg.asObject(runtime);
       return margelo::nitro::splash::SplashManifestSpec(
+        JSIConverter<std::optional<margelo::nitro::splash::SplashLaunchImageSpec>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "launchImage"))),
         JSIConverter<std::string>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "backgroundColor"))),
         JSIConverter<std::optional<std::string>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "darkBackgroundColor"))),
         JSIConverter<std::optional<margelo::nitro::splash::SplashLogoSpec>>::fromJSI(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "logo"))),
@@ -85,6 +90,7 @@ namespace margelo::nitro {
     }
     static inline jsi::Value toJSI(jsi::Runtime& runtime, const margelo::nitro::splash::SplashManifestSpec& arg) {
       jsi::Object obj(runtime);
+      obj.setProperty(runtime, PropNameIDCache::get(runtime, "launchImage"), JSIConverter<std::optional<margelo::nitro::splash::SplashLaunchImageSpec>>::toJSI(runtime, arg.launchImage));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "backgroundColor"), JSIConverter<std::string>::toJSI(runtime, arg.backgroundColor));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "darkBackgroundColor"), JSIConverter<std::optional<std::string>>::toJSI(runtime, arg.darkBackgroundColor));
       obj.setProperty(runtime, PropNameIDCache::get(runtime, "logo"), JSIConverter<std::optional<margelo::nitro::splash::SplashLogoSpec>>::toJSI(runtime, arg.logo));
@@ -105,6 +111,7 @@ namespace margelo::nitro {
       if (!nitro::isPlainObject(runtime, obj)) {
         return false;
       }
+      if (!JSIConverter<std::optional<margelo::nitro::splash::SplashLaunchImageSpec>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "launchImage")))) return false;
       if (!JSIConverter<std::string>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "backgroundColor")))) return false;
       if (!JSIConverter<std::optional<std::string>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "darkBackgroundColor")))) return false;
       if (!JSIConverter<std::optional<margelo::nitro::splash::SplashLogoSpec>>::canConvert(runtime, obj.getProperty(runtime, PropNameIDCache::get(runtime, "logo")))) return false;

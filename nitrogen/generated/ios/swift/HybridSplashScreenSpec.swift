@@ -18,6 +18,8 @@ public protocol HybridSplashScreenSpec_protocol: HybridObject {
   func preventAutoHide() throws -> Void
   func hide(options: SplashHideOptionsSpec) throws -> Promise<Void>
   func show() throws -> Promise<Void>
+  func setLaunchImage(image: SplashLaunchImageSpec) throws -> Void
+  func clearLaunchImage() throws -> Void
   func setEventListener(listener: @escaping (_ event: SplashNativeEvent) -> Void) throws -> Void
   func clearEventListener() throws -> Void
 }

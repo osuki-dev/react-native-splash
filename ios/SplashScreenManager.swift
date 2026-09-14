@@ -43,7 +43,10 @@ public final class SplashScreenManager: NSObject {
 
   private static let log = Logger(subsystem: "dev.osuki.splash", category: "manager")
 
-  public let manifest: SplashManifestSpec = SplashManifest.load()
+  /// The launch image in effect for this process. Read once, at startup:
+  /// a change made by JS applies from the next cold start on.
+  private let launchImage: SplashLaunchImageSpec? = SplashLaunchImageStore.load()
+  public let manifest: SplashManifestSpec
   public var eventListener: ((SplashNativeEvent) -> Void)?
 
   private var overlay: UIView?
@@ -62,7 +65,35 @@ public final class SplashScreenManager: NSObject {
   private let lock = NSLock()
 
   private override init() {
+    let compiled = SplashManifest.load()
+    if let launchImage {
+      // The overlay's paper is the launch image's, so the manifest says so:
+      // JS mirrors what native drew, not what was compiled in.
+      manifest = SplashManifestSpec(
+        launchImage: launchImage,
+        backgroundColor: launchImage.backgroundColor,
+        darkBackgroundColor: launchImage.darkBackgroundColor,
+        logo: compiled.logo,
+        darkLogo: compiled.darkLogo,
+        logoSizeRatio: compiled.logoSizeRatio,
+        statusBarHeight: compiled.statusBarHeight,
+        navigationBarHeight: compiled.navigationBarHeight,
+        edgeToEdge: compiled.edgeToEdge,
+        autoHide: compiled.autoHide,
+        hideTimeoutMs: compiled.hideTimeoutMs
+      )
+    } else {
+      manifest = compiled
+    }
     super.init()
+  }
+
+  public func setLaunchImage(_ image: SplashLaunchImageSpec) {
+    SplashLaunchImageStore.save(image)
+  }
+
+  public func clearLaunchImage() {
+    SplashLaunchImageStore.clear()
   }
 
   // MARK: - Entry points (main thread)
@@ -140,7 +171,7 @@ public final class SplashScreenManager: NSObject {
   private func attachIfPossible() {
     guard overlay == nil else { return }
     guard let window = Self.keyWindow() else { return }
-    guard let view = Self.instantiateLaunchScreen() else { return }
+    guard let view = instantiateOverlay(in: window) else { return }
 
     let host = hostRootView ?? Self.findHostRootView(in: window)
     view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -347,6 +378,15 @@ public final class SplashScreenManager: NSObject {
     let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
     let windows = scenes.flatMap { $0.windows }
     return windows.first { $0.isKeyWindow } ?? windows.first ?? UIApplication.shared.delegate?.window ?? nil
+  }
+
+  /// The launch image when the app set one, else the launch storyboard.
+  private func instantiateOverlay(in window: UIWindow) -> UIView? {
+    if let launchImage {
+      Self.log.info("drawing the app-supplied launch image")
+      return SplashLaunchImageView(image: launchImage, frame: window.bounds)
+    }
+    return Self.instantiateLaunchScreen()
   }
 
   private static func instantiateLaunchScreen() -> UIView? {

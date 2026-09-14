@@ -9,6 +9,8 @@
 
 // Forward declaration of `SplashManifestSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashManifestSpec; }
+// Forward declaration of `SplashLaunchImageSpec` to properly resolve imports.
+namespace margelo::nitro::splash { struct SplashLaunchImageSpec; }
 // Forward declaration of `SplashLogoSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashLogoSpec; }
 // Forward declaration of `SplashLaunchInfoSpec` to properly resolve imports.
@@ -24,8 +26,10 @@ namespace margelo::nitro::splash { enum class SplashNativeEventType; }
 
 #include "SplashManifestSpec.hpp"
 #include "JSplashManifestSpec.hpp"
-#include <string>
+#include "SplashLaunchImageSpec.hpp"
 #include <optional>
+#include "JSplashLaunchImageSpec.hpp"
+#include <string>
 #include "SplashLogoSpec.hpp"
 #include "JSplashLogoSpec.hpp"
 #include "SplashLaunchInfoSpec.hpp"
@@ -125,6 +129,14 @@ namespace margelo::nitro::splash {
       });
       return __promise;
     }();
+  }
+  void JHybridSplashScreenSpec::setLaunchImage(const SplashLaunchImageSpec& image) {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<JSplashLaunchImageSpec> /* image */)>("setLaunchImage");
+    method(_javaPart, JSplashLaunchImageSpec::fromCpp(image));
+  }
+  void JHybridSplashScreenSpec::clearLaunchImage() {
+    static const auto method = _javaPart->javaClassStatic()->getMethod<void()>("clearLaunchImage");
+    method(_javaPart);
   }
   void JHybridSplashScreenSpec::setEventListener(const std::function<void(const SplashNativeEvent& /* event */)>& listener) {
     static const auto method = _javaPart->javaClassStatic()->getMethod<void(jni::alias_ref<JFunc_void_SplashNativeEvent::javaobject> /* listener */)>("setEventListener_cxx");

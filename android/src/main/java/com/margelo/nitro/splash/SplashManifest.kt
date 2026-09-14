@@ -13,7 +13,12 @@ object SplashManifest {
   private const val LOGO_RESOURCE = "splashscreen_logo"
   private const val BACKGROUND_RESOURCE = "splashscreen_background"
 
-  fun load(application: Context?, activity: Activity?, attrs: SplashThemeAttributes?): SplashManifestSpec {
+  fun load(
+    application: Context?,
+    activity: Activity?,
+    attrs: SplashThemeAttributes?,
+    launchImage: SplashLaunchImageSpec? = null,
+  ): SplashManifestSpec {
     val context = activity ?: application
     val resources = context?.resources
     val packageName = context?.packageName ?: ""
@@ -29,8 +34,10 @@ object SplashManifest {
     val logo = logoName?.let { SplashLogoSpec(it, SplashOverlayView.ICON_CANVAS_DP.toDouble(), SplashOverlayView.ICON_CANVAS_DP.toDouble()) }
 
     return SplashManifestSpec(
-      backgroundColor = hex(backgroundColor ?: 0xFFFFFFFF.toInt()),
-      darkBackgroundColor = darkBackgroundColor?.let { hex(it) },
+      launchImage = launchImage,
+      // With a launch image the overlay's paper is the image's, and JS mirrors what native drew.
+      backgroundColor = launchImage?.backgroundColor ?: hex(backgroundColor ?: 0xFFFFFFFF.toInt()),
+      darkBackgroundColor = launchImage?.darkBackgroundColor ?: darkBackgroundColor?.let { hex(it) },
       logo = logo,
       // The night drawable qualifier resolves automatically under the same name.
       darkLogo = logo,

@@ -19,6 +19,8 @@ namespace margelo::nitro::splash { struct SplashManifestSpec; }
 namespace margelo::nitro::splash { struct SplashLaunchInfoSpec; }
 // Forward declaration of `SplashHideOptionsSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashHideOptionsSpec; }
+// Forward declaration of `SplashLaunchImageSpec` to properly resolve imports.
+namespace margelo::nitro::splash { struct SplashLaunchImageSpec; }
 // Forward declaration of `SplashNativeEvent` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashNativeEvent; }
 
@@ -26,6 +28,7 @@ namespace margelo::nitro::splash { struct SplashNativeEvent; }
 #include "SplashLaunchInfoSpec.hpp"
 #include <NitroModules/Promise.hpp>
 #include "SplashHideOptionsSpec.hpp"
+#include "SplashLaunchImageSpec.hpp"
 #include "SplashNativeEvent.hpp"
 #include <functional>
 
@@ -65,6 +68,8 @@ namespace margelo::nitro::splash {
       virtual void preventAutoHide() = 0;
       virtual std::shared_ptr<Promise<void>> hide(const SplashHideOptionsSpec& options) = 0;
       virtual std::shared_ptr<Promise<void>> show() = 0;
+      virtual void setLaunchImage(const SplashLaunchImageSpec& image) = 0;
+      virtual void clearLaunchImage() = 0;
       virtual void setEventListener(const std::function<void(const SplashNativeEvent& /* event */)>& listener) = 0;
       virtual void clearEventListener() = 0;
 

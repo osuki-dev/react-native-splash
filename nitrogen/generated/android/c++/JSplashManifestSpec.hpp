@@ -10,7 +10,9 @@
 #include <fbjni/fbjni.h>
 #include "SplashManifestSpec.hpp"
 
+#include "JSplashLaunchImageSpec.hpp"
 #include "JSplashLogoSpec.hpp"
+#include "SplashLaunchImageSpec.hpp"
 #include "SplashLogoSpec.hpp"
 #include <optional>
 #include <string>
@@ -34,6 +36,8 @@ namespace margelo::nitro::splash {
     [[nodiscard]]
     SplashManifestSpec toCpp() const {
       static const auto clazz = javaClassStatic();
+      static const auto fieldLaunchImage = clazz->getField<JSplashLaunchImageSpec>("launchImage");
+      jni::local_ref<JSplashLaunchImageSpec> launchImage = this->getFieldValue(fieldLaunchImage);
       static const auto fieldBackgroundColor = clazz->getField<jni::JString>("backgroundColor");
       jni::local_ref<jni::JString> backgroundColor = this->getFieldValue(fieldBackgroundColor);
       static const auto fieldDarkBackgroundColor = clazz->getField<jni::JString>("darkBackgroundColor");
@@ -55,6 +59,7 @@ namespace margelo::nitro::splash {
       static const auto fieldHideTimeoutMs = clazz->getField<double>("hideTimeoutMs");
       double hideTimeoutMs = this->getFieldValue(fieldHideTimeoutMs);
       return SplashManifestSpec(
+        launchImage != nullptr ? std::make_optional(launchImage->toCpp()) : std::nullopt,
         backgroundColor->toStdString(),
         darkBackgroundColor != nullptr ? std::make_optional(darkBackgroundColor->toStdString()) : std::nullopt,
         logo != nullptr ? std::make_optional(logo->toCpp()) : std::nullopt,
@@ -74,11 +79,12 @@ namespace margelo::nitro::splash {
      */
     [[maybe_unused]]
     static jni::local_ref<JSplashManifestSpec::javaobject> fromCpp(const SplashManifestSpec& value) {
-      using JSignature = JSplashManifestSpec(jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<JSplashLogoSpec>, jni::alias_ref<JSplashLogoSpec>, double, double, double, jboolean, jboolean, double);
+      using JSignature = JSplashManifestSpec(jni::alias_ref<JSplashLaunchImageSpec>, jni::alias_ref<jni::JString>, jni::alias_ref<jni::JString>, jni::alias_ref<JSplashLogoSpec>, jni::alias_ref<JSplashLogoSpec>, double, double, double, jboolean, jboolean, double);
       static const auto clazz = javaClassStatic();
       static const auto create = clazz->getStaticMethod<JSignature>("fromCpp");
       return create(
         clazz,
+        value.launchImage.has_value() ? JSplashLaunchImageSpec::fromCpp(value.launchImage.value()) : nullptr,
         jni::make_jstring(value.backgroundColor),
         value.darkBackgroundColor.has_value() ? jni::make_jstring(value.darkBackgroundColor.value()) : nullptr,
         value.logo.has_value() ? JSplashLogoSpec::fromCpp(value.logo.value()) : nullptr,

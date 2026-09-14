@@ -4,6 +4,7 @@ import type {
   SplashEventMap,
   SplashEventName,
   SplashHideOptions,
+  SplashLaunchImage,
   SplashLaunchInfo,
   SplashListener,
   SplashManifest,
@@ -75,6 +76,20 @@ class SplashScreenController {
     if (native === null) return
     await native.show()
     this.setPhase('native')
+  }
+
+  /**
+   * From the next cold start on, native draws this picture on this paper
+   * instead of the compiled launch assets, and `getManifest().launchImage`
+   * reports it so `useSplashMirror` paints the same frame. Persisted natively.
+   */
+  setLaunchImage(image: SplashLaunchImage): void {
+    this.native()?.setLaunchImage({ ...image })
+  }
+
+  /** Back to the compiled launch assets from the next cold start on. */
+  clearLaunchImage(): void {
+    this.native()?.clearLaunchImage()
   }
 
   isVisible(): boolean {

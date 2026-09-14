@@ -14,6 +14,8 @@ namespace margelo::nitro::splash { class HybridSplashScreenSpec; }
 namespace margelo::nitro::splash { enum class SplashColorScheme; }
 // Forward declaration of `SplashHideOptionsSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashHideOptionsSpec; }
+// Forward declaration of `SplashLaunchImageSpec` to properly resolve imports.
+namespace margelo::nitro::splash { struct SplashLaunchImageSpec; }
 // Forward declaration of `SplashLaunchInfoSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashLaunchInfoSpec; }
 // Forward declaration of `SplashLogoSpec` to properly resolve imports.
@@ -29,6 +31,7 @@ namespace margelo::nitro::splash { struct SplashNativeEvent; }
 #include "HybridSplashScreenSpec.hpp"
 #include "SplashColorScheme.hpp"
 #include "SplashHideOptionsSpec.hpp"
+#include "SplashLaunchImageSpec.hpp"
 #include "SplashLaunchInfoSpec.hpp"
 #include "SplashLogoSpec.hpp"
 #include "SplashManifestSpec.hpp"

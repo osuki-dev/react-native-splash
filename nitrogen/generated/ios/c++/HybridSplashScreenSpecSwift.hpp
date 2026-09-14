@@ -14,6 +14,8 @@ namespace OsukiSplash { class HybridSplashScreenSpec_cxx; }
 
 // Forward declaration of `SplashManifestSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashManifestSpec; }
+// Forward declaration of `SplashLaunchImageSpec` to properly resolve imports.
+namespace margelo::nitro::splash { struct SplashLaunchImageSpec; }
 // Forward declaration of `SplashLogoSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashLogoSpec; }
 // Forward declaration of `SplashLaunchInfoSpec` to properly resolve imports.
@@ -28,8 +30,9 @@ namespace margelo::nitro::splash { struct SplashNativeEvent; }
 namespace margelo::nitro::splash { enum class SplashNativeEventType; }
 
 #include "SplashManifestSpec.hpp"
-#include <string>
+#include "SplashLaunchImageSpec.hpp"
 #include <optional>
+#include <string>
 #include "SplashLogoSpec.hpp"
 #include "SplashLaunchInfoSpec.hpp"
 #include "SplashColorScheme.hpp"
@@ -123,6 +126,18 @@ namespace margelo::nitro::splash {
       }
       auto __value = std::move(__result.value());
       return __value;
+    }
+    inline void setLaunchImage(const SplashLaunchImageSpec& image) override {
+      auto __result = _swiftPart.setLaunchImage(std::forward<decltype(image)>(image));
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
+    }
+    inline void clearLaunchImage() override {
+      auto __result = _swiftPart.clearLaunchImage();
+      if (__result.hasError()) [[unlikely]] {
+        std::rethrow_exception(__result.error());
+      }
     }
     inline void setEventListener(const std::function<void(const SplashNativeEvent& /* event */)>& listener) override {
       auto __result = _swiftPart.setEventListener(listener);
