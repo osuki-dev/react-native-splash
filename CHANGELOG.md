@@ -1,5 +1,11 @@
 # @osuki-dev/react-native-splash
 
+## 0.1.1
+
+### Patch Changes
+
+- [`1116b56`](https://github.com/osuki-dev/react-native-splash/commit/1116b56b900429c5f5e971cde99c0f83464a0cf1) Thanks [@BANG88](https://github.com/BANG88)! - Relicense under MIT.
+
 ## 0.1.0
 
 ### Minor Changes
