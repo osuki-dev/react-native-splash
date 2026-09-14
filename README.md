@@ -268,4 +268,4 @@ Releases follow changesets: add one with `bun run changeset`, merge the
 
 ## License
 
-Apache-2.0
+MIT

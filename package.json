@@ -66,7 +66,7 @@
     "url": "git+https://github.com/osuki-dev/react-native-splash.git"
   },
   "author": "osuki-dev",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/osuki-dev/react-native-splash/issues"
   },
