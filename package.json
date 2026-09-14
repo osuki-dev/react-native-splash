@@ -1,0 +1,114 @@
+{
+  "name": "@osuki-dev/react-native-splash",
+  "version": "0.1.1",
+  "description": "Splash and intro screens for React Native and Expo. The native launch screen hands off to your own React view and Reanimated animation without a flash. Nitro Modules, Swift + Kotlin, no AppDelegate or MainActivity edits.",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "react-native": "./src/index.ts",
+  "source": "./src/index.ts",
+  "bin": {
+    "react-native-splash": "./cli/bin.js"
+  },
+  "files": [
+    "src",
+    "!src/__tests__",
+    "lib",
+    "intros/package.json",
+    "plugin/build",
+    "cli/bin.js",
+    "cli/build",
+    "jest",
+    "app.plugin.js",
+    "react-native.config.js",
+    "nitrogen",
+    "nitro.json",
+    "*.podspec",
+    "ios",
+    "android/build.gradle",
+    "android/gradle.properties",
+    "android/CMakeLists.txt",
+    "android/fix-prefab.gradle",
+    "android/src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit && tsc --noEmit -p plugin/tsconfig.json && tsc --noEmit -p cli/tsconfig.json",
+    "build": "bun run build:js && bun run build:types && bun run build:plugin && bun run build:cli",
+    "build:js": "bun build src/index.ts src/intros/index.ts --outdir lib --format esm --target browser --packages external --sourcemap=linked",
+    "build:types": "tsc -p tsconfig.build.json",
+    "build:plugin": "tsc -p plugin/tsconfig.json",
+    "build:cli": "tsc -p cli/tsconfig.json",
+    "specs": "nitrogen --logLevel=\"info\"",
+    "clean": "rm -rf lib plugin/build cli/build android/build android/.cxx",
+    "prepack": "bun run build",
+    "test": "bun test src plugin",
+    "changeset": "changeset",
+    "version:packages": "changeset version && bun install --lockfile-only"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "nitro",
+    "nitro-modules",
+    "splash",
+    "splash-screen",
+    "launch-screen",
+    "onboarding",
+    "intro",
+    "reanimated",
+    "ios",
+    "android"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osuki-dev/react-native-splash.git"
+  },
+  "author": "osuki-dev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/osuki-dev/react-native-splash/issues"
+  },
+  "homepage": "https://github.com/osuki-dev/react-native-splash#readme",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": ">=0.78.0",
+    "react-native-nitro-modules": "^0.36.0",
+    "react-native-reanimated": ">=4.0.0",
+    "react-native-worklets": "*"
+  },
+  "dependencies": {
+    "@expo/image-utils": "^0.11.5",
+    "@expo/plist": "^0.8.1",
+    "xcode": "^3.0.1"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.7",
+    "@types/bun": "^1.3.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/xcode": "^3.0.0",
+    "expo": "~57.0.9",
+    "nitrogen": "0.36.5",
+    "react": "19.2.8",
+    "react-native": "0.86.2",
+    "react-native-nitro-modules": "0.36.5",
+    "typescript": "~5.9.0",
+    "react-native-reanimated": "4.5.3",
+    "react-native-worklets": "0.11.3"
+  },
+  "peerDependenciesMeta": {
+    "react-native-reanimated": {
+      "optional": true
+    },
+    "react-native-worklets": {
+      "optional": true
+    }
+  }
+}
