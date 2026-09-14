@@ -10,14 +10,23 @@ import UIKit
 enum SplashLaunchImageStore {
   private static let key = "dev.osuki.splash.launchImage"
 
+  /**
+   * iOS moves the app's data container to a new UUID on every update or
+   * reinstall, so an absolute path saved before an update is dead after it.
+   * Paths under the home directory are stored relative to it and re-rooted
+   * on load; anything else is stored as given.
+   */
+  private static let homeMarker = "$HOME/"
+
   static func load() -> SplashLaunchImageSpec? {
     guard let dict = UserDefaults.standard.dictionary(forKey: key) else { return nil }
-    guard let uri = dict["uri"] as? String,
+    guard let storedUri = dict["uri"] as? String,
           let backgroundColor = dict["backgroundColor"] as? String,
           let widthFraction = dict["widthFraction"] as? Double,
           let maxWidth = dict["maxWidth"] as? Double,
           let aspectRatio = dict["aspectRatio"] as? Double
     else { return nil }
+    let uri = expandHome(storedUri)
     guard FileManager.default.fileExists(atPath: path(for: uri)) else { return nil }
     return SplashLaunchImageSpec(
       uri: uri,
@@ -31,7 +40,7 @@ enum SplashLaunchImageStore {
 
   static func save(_ image: SplashLaunchImageSpec) {
     var dict: [String: Any] = [
-      "uri": image.uri,
+      "uri": contractHome(image.uri),
       "backgroundColor": image.backgroundColor,
       "widthFraction": image.widthFraction,
       "maxWidth": image.maxWidth,
@@ -48,6 +57,20 @@ enum SplashLaunchImageStore {
   static func path(for uri: String) -> String {
     if let url = URL(string: uri), url.isFileURL { return url.path }
     return uri
+  }
+
+  /// `file:///…/Containers/Data/Application/<uuid>/Documents/x.png` -> `$HOME/Documents/x.png`.
+  static func contractHome(_ uri: String) -> String {
+    let home = NSHomeDirectory()
+    let filePath = path(for: uri)
+    guard filePath.hasPrefix(home + "/") else { return uri }
+    return homeMarker + String(filePath.dropFirst(home.count + 1))
+  }
+
+  /// The inverse of `contractHome`, against the container this process runs in.
+  static func expandHome(_ stored: String) -> String {
+    guard stored.hasPrefix(homeMarker) else { return stored }
+    return NSHomeDirectory() + "/" + String(stored.dropFirst(homeMarker.count))
   }
 }
 
