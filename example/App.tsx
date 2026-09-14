@@ -121,7 +121,14 @@ export default function App() {
         </Section>
       </ScrollView>
 
-      <SplashOverlay key={run} ready={ready} minimumDuration={intro.interactive ? 0 : 500} onPhaseChange={setPhase}>
+      <SplashOverlay
+        key={run}
+        ready={ready}
+        minimumDuration={intro.interactive ? 0 : 500}
+        // An onboarding waits for the user; the safety cap is for loading gates.
+        timeout={intro.interactive ? 0 : 15_000}
+        onPhaseChange={setPhase}
+      >
         {(context) => <Intro {...context} onDone={() => setReady(true)} />}
       </SplashOverlay>
     </View>

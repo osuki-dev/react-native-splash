@@ -140,7 +140,9 @@ const [introDone, setIntroDone] = useState(false)
 | `OnboardingIntro`  | Swipeable pages with parallax and dots; `onDone` fires on "Get started".     | `pages`, `nextLabel`, `startLabel`, `buttonColor`, `buttonTextColor` |
 
 Every intro takes the overlay's render context plus `onDone`; only
-`OnboardingIntro` calls it. Their first frame is the launch-screen mirror, so
+`OnboardingIntro` calls it. For interactive intros pass `timeout={0}` (or a
+generous value): the default 15 s cap exists for loading gates and would cut
+a reader off mid-onboarding. Their first frame is the launch-screen mirror, so
 the handoff stays seamless whichever one you pick. The example app switches
 between all four at runtime through `SplashScreen.show()`.
 
