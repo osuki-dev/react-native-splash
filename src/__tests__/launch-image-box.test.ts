@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 
-import { launchImageBox } from '../use-splash-mirror'
+import { launchImageBox } from '../launch-image'
 
 const hero = { uri: 'file:///hero.png', backgroundColor: '#000', widthFraction: 0.74, maxWidth: 560, aspectRatio: 2 }
 
