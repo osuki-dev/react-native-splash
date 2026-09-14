@@ -1,6 +1,7 @@
 import Foundation
 import NitroModules
 import UIKit
+import os
 
 /**
  * Owns the native overlay for the whole process. It exists before the JS
@@ -14,10 +15,21 @@ import UIKit
  *    reached through the Objective-C runtime so this pod does not need React
  *    headers and keeps working across RN versions.
  * 2. Otherwise a subview on top of the key window (react-native-navigation,
- *    brownfield hosts).
+ *    brownfield hosts, and every app whose root view arrives late).
+ *
+ * A late root view is the ordinary case with expo-updates: at launch the
+ * window holds a placeholder, and the real `RCTSurfaceHostingProxyRootView`
+ * replaces the whole root view controller once the update check is done. A
+ * window subview is not guaranteed to stay above that swap, so after
+ * attaching the manager keeps watching the window until the overlay is gone:
+ * the moment a hosting root view appears the overlay moves into its
+ * `loadingView` slot, and until then it is kept in front of whatever the host
+ * app inserts.
  *
  * The overlay is the launch storyboard itself, instantiated by name, so it is
  * pixel-identical to what the system just showed.
+ *
+ * `log stream --predicate 'subsystem == "dev.osuki.splash"'` shows what it did.
  */
 @objc(OsukiSplashScreenManager)
 public final class SplashScreenManager: NSObject {
@@ -26,6 +38,10 @@ public final class SplashScreenManager: NSObject {
   /// How long the system launch screen keeps cross-fading after our view is
   /// up. Removing ours earlier flashes the app underneath.
   private static let systemFadeGuard: TimeInterval = 0.35
+  /// How often the window is re-checked for a late root view while the overlay is up.
+  private static let hostWatchInterval: TimeInterval = 0.1
+
+  private static let log = Logger(subsystem: "dev.osuki.splash", category: "manager")
 
   public let manifest: SplashManifestSpec = SplashManifest.load()
   public var eventListener: ((SplashNativeEvent) -> Void)?
@@ -41,6 +57,7 @@ public final class SplashScreenManager: NSObject {
   private var autoHidePrevented = false
   private var observersInstalled = false
   private var timeoutWork: DispatchWorkItem?
+  private var hostWatch: DispatchSourceTimer?
   private let processStart = Date()
   private let lock = NSLock()
 
@@ -130,9 +147,11 @@ public final class SplashScreenManager: NSObject {
     if let host, attach(view, toHost: host) {
       hostRootView = host
       host.backgroundColor = SplashManifest.backgroundColor(for: manifest)
+      Self.log.info("attached to the React Native root view")
     } else {
       view.frame = window.bounds
       window.addSubview(view)
+      Self.log.info("attached to the window; no React Native root view yet")
     }
     window.backgroundColor = SplashManifest.backgroundColor(for: manifest)
 
@@ -145,7 +164,48 @@ public final class SplashScreenManager: NSObject {
 
     startFadeGuard()
     scheduleTimeout()
+    startHostWatch()
     emit(.attached)
+  }
+
+  /// Keeps the overlay on top while the host app is still assembling its
+  /// view hierarchy. Cheap: one subview walk every 100 ms, only while visible.
+  private func startHostWatch() {
+    stopHostWatch()
+    let timer = DispatchSource.makeTimerSource(queue: .main)
+    timer.schedule(deadline: .now() + Self.hostWatchInterval, repeating: Self.hostWatchInterval)
+    timer.setEventHandler { [weak self] in self?.watchHost() }
+    timer.resume()
+    hostWatch = timer
+  }
+
+  private func stopHostWatch() {
+    hostWatch?.cancel()
+    hostWatch = nil
+  }
+
+  private func watchHost() {
+    guard overlayVisible, let overlay else {
+      stopHostWatch()
+      return
+    }
+    // Already in a live root view's loadingView slot: nothing to do.
+    if let host = hostRootView, host.window != nil, overlay.isDescendant(of: host) { return }
+    guard let window = overlay.window ?? Self.keyWindow() else { return }
+    if let host = Self.findHostRootView(in: window), attach(overlay, toHost: host) {
+      hostRootView = host
+      host.backgroundColor = SplashManifest.backgroundColor(for: manifest)
+      Self.log.info("root view arrived; overlay moved into its loadingView slot")
+      return
+    }
+    // Still window-level: stay above whatever the host app just inserted.
+    if overlay.superview === window {
+      if window.subviews.last !== overlay { window.bringSubviewToFront(overlay) }
+    } else if overlay.superview == nil {
+      overlay.frame = window.bounds
+      window.addSubview(overlay)
+      Self.log.info("overlay had been detached by the host app; re-added to the window")
+    }
   }
 
   /// `loadingView` is a factory on the hosting view; setting it while the
@@ -167,6 +227,8 @@ public final class SplashScreenManager: NSObject {
     lock.unlock()
     timeoutWork?.cancel()
     timeoutWork = nil
+    stopHostWatch()
+    Self.log.info("hiding (fade: \(fade))")
 
     let finish = { [self] in
       overlay.removeFromSuperview()
@@ -215,6 +277,7 @@ public final class SplashScreenManager: NSObject {
   }
 
   @objc private func onJavaScriptDidFailToLoad() {
+    Self.log.error("JavaScript failed to load; hiding the overlay")
     emit(.jsloadfailed)
     // The runtime that owned the listener is unusable now.
     eventListener = nil
@@ -262,6 +325,7 @@ public final class SplashScreenManager: NSObject {
     guard manifest.hideTimeoutMs > 0 else { return }
     let work = DispatchWorkItem { [self] in
       guard overlayVisible else { return }
+      Self.log.error("overlay still visible after \(manifest.hideTimeoutMs, privacy: .public) ms; hiding it")
       emit(.timeout)
       hide(fade: true, durationMs: 200) {}
     }
