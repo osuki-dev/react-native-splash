@@ -1,0 +1,9 @@
+{
+  "name": "@osuki-dev/react-native-splash/intros",
+  "private": true,
+  "main": "../lib/intros/index.js",
+  "module": "../lib/intros/index.js",
+  "types": "../lib/intros/index.d.ts",
+  "react-native": "../src/intros/index.ts",
+  "source": "../src/intros/index.ts"
+}

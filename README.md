@@ -14,10 +14,16 @@ animation, a loading gate, a full onboarding flow.
   projects. Same options as `expo-splash-screen`, so migrating is a rename.
 - **Your animation library.** The package has no animation dependency. It tells
   you *when* (`phase`) and you tell it when you are done (`finish()`).
-- **Nitro Modules**, Swift and Kotlin. React Native 0.78+, New Architecture.
+- **Ready-made intros.** `@osuki-dev/react-native-splash/intros` ships four
+  Reanimated intros (logo reveal, circle reveal, typographic, swipeable
+  onboarding) that start from the exact launch-screen frame.
+- **Nitro Modules**, Swift and Kotlin.
 
-Not supported: Expo Go (native code), full-screen splash images (Android 12+
-only shows an icon; full-bleed art belongs in the JS overlay).
+Requirements: React Native 0.78+ with the New Architecture (the only
+architecture this library targets), iOS 15+, Android 7+ (API 24). Not
+supported: the legacy architecture, Expo Go (native code), full-screen splash
+images (Android 12+ only shows an icon; full-bleed art belongs in the JS
+overlay).
 
 ## Install
 
@@ -104,6 +110,40 @@ export default function App() {
 }
 ```
 
+### Ready-made intros
+
+```sh
+npm install react-native-reanimated react-native-worklets   # optional peers, only for this entry
+```
+
+```tsx
+import { OnboardingIntro } from '@osuki-dev/react-native-splash/intros'
+
+const [introDone, setIntroDone] = useState(false)
+
+<SplashOverlay ready={fontsLoaded && introDone}>
+  {(context) => (
+    <OnboardingIntro
+      {...context}
+      onDone={() => setIntroDone(true)}
+      pages={[{ title: 'Hello', body: '...', accent: '#FF6B4A' }, ...]}
+    />
+  )}
+</SplashOverlay>
+```
+
+| Intro              | What it does                                                                 | Props                                             |
+| ------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------- |
+| `LogoRevealIntro`  | Logo breathes while loading, ring ripples out, scales into transparency.     | `ringColor`, `exitDuration`                       |
+| `CircleRevealIntro`| The background collapses into the logo, revealing the app from the edges.   |                                                   |
+| `TypographicIntro` | Logo lifts, a tagline lands word by word, the sheet exits like a curtain.    | `words`, `textColor`, `textStyle`                 |
+| `OnboardingIntro`  | Swipeable pages with parallax and dots; `onDone` fires on "Get started".     | `pages`, `nextLabel`, `startLabel`, `buttonColor`, `buttonTextColor` |
+
+Every intro takes the overlay's render context plus `onDone`; only
+`OnboardingIntro` calls it. Their first frame is the launch-screen mirror, so
+the handoff stays seamless whichever one you pick. The example app switches
+between all four at runtime through `SplashScreen.show()`.
+
 Without children, `<SplashOverlay>` renders `<SplashMirror />`, an exact
 replica of the launch screen that fades out. Without `<SplashOverlay>` at
 all, the native overlay hides itself when React content first appears, like
@@ -178,8 +218,9 @@ loaded.
   `MainActivity.onCreate` before `super.onCreate`.
 - **Reduce Motion**: Reanimated finishes animations instantly and still calls
   the completion, so `finish()` runs and nothing gets stuck.
-- **E2E**: pass `timeout` / mount the overlay behind a flag; the Jest mock is
-  a no-op module that resolves every promise.
+- **Jest**: add `setupFiles: ['@osuki-dev/react-native-splash/jest/setup']`;
+  every API becomes a no-op that resolves.
+- **E2E**: keep `timeout` on, or mount the overlay behind a flag.
 
 ## Development
 

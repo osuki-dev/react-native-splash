@@ -99,7 +99,9 @@ export function SplashOverlay({
   // ---------------------------------------------------------------------------
 
   useEffect(() => {
-    if (!nativeHidden) return
+    // Only while the JS overlay is actually on screen: the component stays
+    // mounted (rendering null) after `hidden`, so timers must not outlive it.
+    if (!nativeHidden || phase !== 'visible') return
     const since = handoffAt.current ?? mountedAt.current
     const timers: ReturnType<typeof setTimeout>[] = []
     if (minimumDuration > 0) {
@@ -117,7 +119,10 @@ export function SplashOverlay({
       )
     }
     return () => timers.forEach(clearTimeout)
-  }, [nativeHidden, minimumDuration, timeout])
+  }, [nativeHidden, phase, minimumDuration, timeout])
+
+  const phaseRef = useRef<SplashPhase>(phase)
+  phaseRef.current = phase
 
   useEffect(() => {
     const detach = SplashScreen.attachOverlay()
@@ -131,6 +136,9 @@ export function SplashOverlay({
     return () => {
       subscriptions.forEach((unsubscribe) => unsubscribe())
       detach()
+      // Unmounted before the handoff: nothing else will remove the native
+      // overlay, and preventAutoHide() has already been called.
+      if (phaseRef.current === 'native') void SplashScreen.hide().catch(() => undefined)
     }
   }, [])
 

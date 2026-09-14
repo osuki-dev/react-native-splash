@@ -105,6 +105,16 @@ before native has attached.
 - `use-splash-mirror.ts`: prop bags. Registers the logo as a pending asset.
 - `splash-mirror.tsx`: default content, RN `Animated` fade, no Reanimated.
 
+### Intros (`src/intros`, entry `@osuki-dev/react-native-splash/intros`)
+
+Ready-made overlays on react-native-reanimated, published as a separate
+entry (`intros/package.json` points Metro at `src/intros/index.ts`) so the
+main entry keeps no animation dependency; Reanimated and worklets are
+optional peers. Each intro takes `IntroProps` (the render context plus
+`onDone`), renders the mirror as its first frame, starts moving on `visible`
+and calls `finish()` from its exit animation's completion callback via
+`scheduleOnRN`.
+
 ### Config plugin and CLI
 
 `plugin/src/generate/*` is shared and has no Expo dependency: image resizing
@@ -117,9 +127,16 @@ names carry a content hash to defeat the launch-snapshot cache.
 
 ## Decisions
 
-- **Reanimated is not a dependency.** Reanimated 4 needs the worklets Babel
-  plugin last and the New Architecture; owning that would push the constraints
-  onto every user. `phase` in, `finish()` out keeps it in user land.
+- **New Architecture only.** Reanimated 4 and Nitro Views already require
+  it; the iOS attach path targets `RCTSurfaceHostingProxyRootView` and only
+  falls back to a window subview for hosts without that view.
+- **Reanimated is not a dependency of the main entry.** Reanimated 4 needs
+  the worklets Babel plugin last; owning that would push the constraint onto
+  every user. `phase` in, `finish()` out keeps it in user land, and the
+  `/intros` entry opts in explicitly.
+- **Native never calls a JS listener it cannot trust.** The stored callback is
+  dropped whenever a JS runtime starts or fails to load (dev reload), and the
+  Android emit is wrapped so a dead callback cannot take the main thread down.
 - **Native overlay, not `setKeepOnScreenCondition`.** Holding the first draw
   blocks the JS mirror from being painted underneath; owning a copy of the
   splash lets the app draw freely and gives us `show()` on Android too.

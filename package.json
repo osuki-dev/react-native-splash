@@ -13,9 +13,11 @@
   "files": [
     "src",
     "lib",
+    "intros/package.json",
     "plugin/build",
     "cli/bin.js",
     "cli/build",
+    "jest",
     "app.plugin.js",
     "react-native.config.js",
     "nitrogen",
@@ -33,7 +35,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit && tsc --noEmit -p plugin/tsconfig.json && tsc --noEmit -p cli/tsconfig.json",
     "build": "bun run build:js && bun run build:types && bun run build:plugin && bun run build:cli",
-    "build:js": "bun build src/index.ts --outdir lib --format esm --target browser --packages external --sourcemap=linked",
+    "build:js": "bun build src/index.ts src/intros/index.ts --outdir lib --format esm --target browser --packages external --sourcemap=linked",
     "build:types": "tsc -p tsconfig.build.json",
     "build:plugin": "tsc -p plugin/tsconfig.json",
     "build:cli": "tsc -p cli/tsconfig.json",
@@ -53,6 +55,7 @@
     "splash-screen",
     "launch-screen",
     "onboarding",
+    "intro",
     "reanimated",
     "ios",
     "android"
@@ -73,8 +76,10 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
-    "react-native-nitro-modules": "*"
+    "react-native": ">=0.78.0",
+    "react-native-nitro-modules": "^0.36.0",
+    "react-native-reanimated": ">=4.0.0",
+    "react-native-worklets": "*"
   },
   "dependencies": {
     "@expo/image-utils": "^0.11.5",
@@ -93,6 +98,16 @@
     "react": "19.2.8",
     "react-native": "0.86.2",
     "react-native-nitro-modules": "0.36.5",
-    "typescript": "~5.9.0"
+    "typescript": "~5.9.0",
+    "react-native-reanimated": "4.5.3",
+    "react-native-worklets": "0.11.3"
+  },
+  "peerDependenciesMeta": {
+    "react-native-reanimated": {
+      "optional": true
+    },
+    "react-native-worklets": {
+      "optional": true
+    }
   }
 }

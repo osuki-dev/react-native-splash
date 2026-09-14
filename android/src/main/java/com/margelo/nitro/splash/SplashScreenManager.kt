@@ -66,11 +66,20 @@ object SplashScreenManager {
     System.currentTimeMillis() - SystemClock.elapsedRealtime() + Process.getStartElapsedRealtime()
 
   private val contentAppearedListener = ReactMarker.MarkerListener { name, _, _ ->
-    if (name == ReactMarkerConstants.CONTENT_APPEARED) {
-      contentAppearedCount += 1
-      if (!autoHidePrevented && manifest.autoHide) {
-        hide(fade = false, durationMs = 0) {}
+    when (name) {
+      ReactMarkerConstants.CONTENT_APPEARED -> {
+        contentAppearedCount += 1
+        if (!autoHidePrevented && manifest.autoHide) {
+          hide(fade = false, durationMs = 0) {}
+        }
       }
+      // A dev reload tears the JS runtime down; the stored listener belongs
+      // to it and the new runtime registers its own.
+      ReactMarkerConstants.RELOAD -> {
+        eventListener = null
+        autoHidePrevented = false
+      }
+      else -> {}
     }
   }
 
@@ -252,6 +261,10 @@ object SplashScreenManager {
   }
 
   private fun emit(type: SplashNativeEventType) {
-    eventListener?.invoke(SplashNativeEvent(type, System.currentTimeMillis().toDouble()))
+    val listener = eventListener ?: return
+    // Invoking a callback whose JS runtime is gone throws; that must never
+    // take the main thread down.
+    runCatching { listener(SplashNativeEvent(type, System.currentTimeMillis().toDouble())) }
+      .onFailure { Log.w(TAG, "dropping $type: JS listener unavailable", it) }
   }
 }

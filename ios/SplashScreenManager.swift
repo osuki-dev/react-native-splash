@@ -197,6 +197,7 @@ public final class SplashScreenManager: NSObject {
     center.addObserver(self, selector: #selector(onContentDidAppear), name: Notification.Name("RCTContentDidAppearNotification"), object: nil)
     center.addObserver(self, selector: #selector(onJavaScriptDidFailToLoad), name: Notification.Name("RCTJavaScriptDidFailToLoadNotification"), object: nil)
     center.addObserver(self, selector: #selector(onReloadCommand), name: Notification.Name("RCTTriggerReloadCommandNotification"), object: nil)
+    center.addObserver(self, selector: #selector(onJavaScriptWillStartLoading), name: Notification.Name("RCTJavaScriptWillStartLoadingNotification"), object: nil)
   }
 
   @objc private func onWindowBecameKey() {
@@ -215,7 +216,15 @@ public final class SplashScreenManager: NSObject {
 
   @objc private func onJavaScriptDidFailToLoad() {
     emit(.jsloadfailed)
+    // The runtime that owned the listener is unusable now.
+    eventListener = nil
     hide(fade: false, durationMs: 0) {}
+  }
+
+  /// A new JS runtime is starting (first load or dev reload). The stored
+  /// listener belongs to the previous runtime; the new one registers its own.
+  @objc private func onJavaScriptWillStartLoading() {
+    eventListener = nil
   }
 
   @objc private func onReloadCommand() {
@@ -224,6 +233,8 @@ public final class SplashScreenManager: NSObject {
     lock.lock()
     autoHidePrevented = false
     lock.unlock()
+    // Drop the old runtime's listener before anything can be emitted.
+    eventListener = nil
     show {}
   }
 
