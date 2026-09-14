@@ -54,10 +54,22 @@ object SplashScreenManager {
 
   @Volatile var eventListener: ((SplashNativeEvent) -> Unit)? = null
 
+  /** The launch image in effect for this process; a change applies from the next cold start on. */
+  private var launchImage: SplashLaunchImageSpec? = null
+
   @Volatile private var manifestCache: SplashManifestSpec? = null
 
   val manifest: SplashManifestSpec
-    get() = manifestCache ?: SplashManifest.load(application, activityRef?.get(), themeAttrs).also { manifestCache = it }
+    get() = manifestCache
+      ?: SplashManifest.load(application, activityRef?.get(), themeAttrs, launchImage).also { manifestCache = it }
+
+  fun setLaunchImage(image: SplashLaunchImageSpec) {
+    application?.let { SplashLaunchImageStore.save(it, image) }
+  }
+
+  fun clearLaunchImage() {
+    application?.let { SplashLaunchImageStore.clear(it) }
+  }
 
   val isVisible: Boolean
     get() = overlayVisible
@@ -92,6 +104,7 @@ object SplashScreenManager {
     if (installed) return
     installed = true
     application = app
+    launchImage = SplashLaunchImageStore.load(app)
     ReactMarker.addListener(contentAppearedListener)
     app.registerActivityLifecycleCallbacks(lifecycleCallbacks)
   }
@@ -170,11 +183,18 @@ object SplashScreenManager {
     if (overlay != null) return
     val attrs = themeAttrs ?: SplashThemeAttributes.read(activity).also { themeAttrs = it }
     val decor = activity.window?.decorView as? ViewGroup ?: return
-    val view = SplashOverlayView(activity, attrs, manifest.logoSizeRatio.toFloat())
+    val image = launchImage
+    val night = SplashManifest.isNight(activity)
+    val view = if (image != null) {
+      Log.i(TAG, "drawing the app-supplied launch image")
+      SplashOverlayView(activity, image, night)
+    } else {
+      SplashOverlayView(activity, attrs, manifest.logoSizeRatio.toFloat())
+    }
     decor.addView(view, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
     // A plain colour behind React content: no white frame, no leftover
     // compat icon on API < 31 once the overlay is gone.
-    activity.window.setBackgroundDrawable(ColorDrawable(attrs.backgroundColor))
+    activity.window.setBackgroundDrawable(ColorDrawable(view.paperColor))
 
     overlay = view
     overlayVisible = true

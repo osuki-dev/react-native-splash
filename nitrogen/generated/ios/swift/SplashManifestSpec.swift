@@ -18,8 +18,14 @@ public extension SplashManifestSpec {
   /**
    * Create a new instance of `SplashManifestSpec`.
    */
-  init(backgroundColor: String, darkBackgroundColor: String?, logo: SplashLogoSpec?, darkLogo: SplashLogoSpec?, logoSizeRatio: Double, statusBarHeight: Double, navigationBarHeight: Double, edgeToEdge: Bool, autoHide: Bool, hideTimeoutMs: Double) {
-    self.init(std.string(backgroundColor), { () -> bridge.std__optional_std__string_ in
+  init(launchImage: SplashLaunchImageSpec?, backgroundColor: String, darkBackgroundColor: String?, logo: SplashLogoSpec?, darkLogo: SplashLogoSpec?, logoSizeRatio: Double, statusBarHeight: Double, navigationBarHeight: Double, edgeToEdge: Bool, autoHide: Bool, hideTimeoutMs: Double) {
+    self.init({ () -> bridge.std__optional_SplashLaunchImageSpec_ in
+      if let __unwrappedValue = launchImage {
+        return bridge.create_std__optional_SplashLaunchImageSpec_(__unwrappedValue)
+      } else {
+        return .init()
+      }
+    }(), std.string(backgroundColor), { () -> bridge.std__optional_std__string_ in
       if let __unwrappedValue = darkBackgroundColor {
         return bridge.create_std__optional_std__string_(std.string(__unwrappedValue))
       } else {
@@ -40,6 +46,11 @@ public extension SplashManifestSpec {
     }(), logoSizeRatio, statusBarHeight, navigationBarHeight, edgeToEdge, autoHide, hideTimeoutMs)
   }
 
+  @inline(__always)
+  var launchImage: SplashLaunchImageSpec? {
+    return self.__launchImage.value
+  }
+  
   @inline(__always)
   var backgroundColor: String {
     return String(self.__backgroundColor)

@@ -20,6 +20,9 @@ import java.util.Objects
 data class SplashManifestSpec(
   @DoNotStrip
   @Keep
+  val launchImage: SplashLaunchImageSpec?,
+  @DoNotStrip
+  @Keep
   val backgroundColor: String,
   @DoNotStrip
   @Keep
@@ -54,7 +57,8 @@ data class SplashManifestSpec(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is SplashManifestSpec) return false
-    return Objects.deepEquals(this.backgroundColor, other.backgroundColor)
+    return Objects.deepEquals(this.launchImage, other.launchImage)
+      && Objects.deepEquals(this.backgroundColor, other.backgroundColor)
       && Objects.deepEquals(this.darkBackgroundColor, other.darkBackgroundColor)
       && Objects.deepEquals(this.logo, other.logo)
       && Objects.deepEquals(this.darkLogo, other.darkLogo)
@@ -68,6 +72,7 @@ data class SplashManifestSpec(
 
   override fun hashCode(): Int {
     return arrayOf<Any?>(
+      launchImage,
       backgroundColor,
       darkBackgroundColor,
       logo,
@@ -89,8 +94,8 @@ data class SplashManifestSpec(
     @Keep
     @Suppress("unused")
     @JvmStatic
-    private fun fromCpp(backgroundColor: String, darkBackgroundColor: String?, logo: SplashLogoSpec?, darkLogo: SplashLogoSpec?, logoSizeRatio: Double, statusBarHeight: Double, navigationBarHeight: Double, edgeToEdge: Boolean, autoHide: Boolean, hideTimeoutMs: Double): SplashManifestSpec {
-      return SplashManifestSpec(backgroundColor, darkBackgroundColor, logo, darkLogo, logoSizeRatio, statusBarHeight, navigationBarHeight, edgeToEdge, autoHide, hideTimeoutMs)
+    private fun fromCpp(launchImage: SplashLaunchImageSpec?, backgroundColor: String, darkBackgroundColor: String?, logo: SplashLogoSpec?, darkLogo: SplashLogoSpec?, logoSizeRatio: Double, statusBarHeight: Double, navigationBarHeight: Double, edgeToEdge: Boolean, autoHide: Boolean, hideTimeoutMs: Double): SplashManifestSpec {
+      return SplashManifestSpec(launchImage, backgroundColor, darkBackgroundColor, logo, darkLogo, logoSizeRatio, statusBarHeight, navigationBarHeight, edgeToEdge, autoHide, hideTimeoutMs)
     }
   }
 }

@@ -20,6 +20,8 @@ namespace margelo::nitro::splash {
       prototype.registerHybridMethod("preventAutoHide", &HybridSplashScreenSpec::preventAutoHide);
       prototype.registerHybridMethod("hide", &HybridSplashScreenSpec::hide);
       prototype.registerHybridMethod("show", &HybridSplashScreenSpec::show);
+      prototype.registerHybridMethod("setLaunchImage", &HybridSplashScreenSpec::setLaunchImage);
+      prototype.registerHybridMethod("clearLaunchImage", &HybridSplashScreenSpec::clearLaunchImage);
       prototype.registerHybridMethod("setEventListener", &HybridSplashScreenSpec::setEventListener);
       prototype.registerHybridMethod("clearEventListener", &HybridSplashScreenSpec::clearEventListener);
     });

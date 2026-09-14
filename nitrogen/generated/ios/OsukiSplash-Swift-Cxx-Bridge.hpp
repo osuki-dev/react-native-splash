@@ -10,6 +10,8 @@
 // Forward declarations of C++ defined types
 // Forward declaration of `HybridSplashScreenSpec` to properly resolve imports.
 namespace margelo::nitro::splash { class HybridSplashScreenSpec; }
+// Forward declaration of `SplashLaunchImageSpec` to properly resolve imports.
+namespace margelo::nitro::splash { struct SplashLaunchImageSpec; }
 // Forward declaration of `SplashLogoSpec` to properly resolve imports.
 namespace margelo::nitro::splash { struct SplashLogoSpec; }
 // Forward declaration of `SplashNativeEventType` to properly resolve imports.
@@ -23,6 +25,7 @@ namespace OsukiSplash { class HybridSplashScreenSpec_cxx; }
 
 // Include C++ defined types
 #include "HybridSplashScreenSpec.hpp"
+#include "SplashLaunchImageSpec.hpp"
 #include "SplashLogoSpec.hpp"
 #include "SplashNativeEvent.hpp"
 #include "SplashNativeEventType.hpp"
@@ -53,6 +56,21 @@ namespace margelo::nitro::splash::bridge::swift {
     return optional.has_value();
   }
   inline std::string get_std__optional_std__string_(const std::optional<std::string>& optional) noexcept {
+    return optional.value();
+  }
+  
+  // pragma MARK: std::optional<SplashLaunchImageSpec>
+  /**
+   * Specialized version of `std::optional<SplashLaunchImageSpec>`.
+   */
+  using std__optional_SplashLaunchImageSpec_ = std::optional<SplashLaunchImageSpec>;
+  inline std::optional<SplashLaunchImageSpec> create_std__optional_SplashLaunchImageSpec_(const SplashLaunchImageSpec& value) noexcept {
+    return std::optional<SplashLaunchImageSpec>(value);
+  }
+  inline bool has_value_std__optional_SplashLaunchImageSpec_(const std::optional<SplashLaunchImageSpec>& optional) noexcept {
+    return optional.has_value();
+  }
+  inline SplashLaunchImageSpec get_std__optional_SplashLaunchImageSpec_(const std::optional<SplashLaunchImageSpec>& optional) noexcept {
     return optional.value();
   }
   

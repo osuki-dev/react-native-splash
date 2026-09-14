@@ -214,6 +214,30 @@ Events: `phase`, `nativeHidden`, `hidden` (with `durationMs`, a good
 `systemSplashShown` (Android 12+: false when started from a notification or
 widget), timestamps and the colour scheme at launch.
 
+### Launch image (themes, personalisation)
+
+The compiled launch assets are what the OS draws for the first frames of a
+cold start; nothing changes that at runtime. Everything the library draws
+after them can be replaced:
+
+```ts
+SplashScreen.setLaunchImage({
+  uri: 'file:///…/hero.png',      // an image on disk
+  backgroundColor: '#1B1F2A',      // its paper, light and dark
+  darkBackgroundColor: '#0B0D12',
+  widthFraction: 0.74,             // box width as a fraction of the window width…
+  maxWidth: 560,                   // …capped in points / dp
+  aspectRatio: 2,                  // box width / height
+})
+SplashScreen.clearLaunchImage()    // back to the compiled assets
+```
+
+From the next cold start on, the native overlay shows that picture on that
+paper the moment the OS launch screen ends, `getManifest().launchImage`
+reports it, and `useSplashMirror()` paints the identical first JS frame
+(`launchImageBox()` is the shared sizing rule). Persisted natively, so it is
+there before JavaScript is.
+
 ### `useSplashMirror()`
 
 Returns `{ container, logo, hasLogo, backgroundColor, manifest }` prop bags

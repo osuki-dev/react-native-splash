@@ -25,7 +25,28 @@ export interface SplashLogoSpec {
   height: number
 }
 
+/**
+ * A picture the app asked native to show instead of the compiled launch
+ * assets, from the next cold start on: a theme's own artwork, for example.
+ * The OS-drawn launch screen still shows the compiled assets for its first
+ * frames; this replaces everything the library draws after it.
+ */
+export interface SplashLaunchImageSpec {
+  /** `file://` URI or absolute path of an image on disk. */
+  uri: string
+  backgroundColor: string
+  darkBackgroundColor?: string
+  /** Box width as a fraction of the window width. */
+  widthFraction: number
+  /** Box width cap in points / dp. */
+  maxWidth: number
+  /** Box width divided by height. */
+  aspectRatio: number
+}
+
 export interface SplashManifestSpec {
+  /** The launch image in effect for this process, if the app set one. */
+  launchImage?: SplashLaunchImageSpec
   backgroundColor: string
   darkBackgroundColor?: string
   logo?: SplashLogoSpec
@@ -98,6 +119,14 @@ export interface SplashScreen extends HybridObject<{ ios: 'swift'; android: 'kot
 
   /** Present the native overlay again (dev reload, `Updates.reloadAsync()`). */
   show(): Promise<void>
+
+  /**
+   * Show this picture on the pack's paper from the next cold start on, in
+   * place of the compiled launch assets. Persisted natively.
+   */
+  setLaunchImage(image: SplashLaunchImageSpec): void
+  /** Back to the compiled launch assets from the next cold start on. */
+  clearLaunchImage(): void
 
   /**
    * One listener for all native events; the JS layer fans out. Native holds

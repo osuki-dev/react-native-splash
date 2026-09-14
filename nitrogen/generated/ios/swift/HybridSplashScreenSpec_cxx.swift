@@ -198,6 +198,28 @@ open class HybridSplashScreenSpec_cxx {
   }
   
   @inline(__always)
+  public final func setLaunchImage(image: SplashLaunchImageSpec) -> bridge.Result_void_ {
+    do {
+      try self.__implementation.setLaunchImage(image: image)
+      return bridge.create_Result_void_()
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_void_(__exceptionPtr)
+    }
+  }
+  
+  @inline(__always)
+  public final func clearLaunchImage() -> bridge.Result_void_ {
+    do {
+      try self.__implementation.clearLaunchImage()
+      return bridge.create_Result_void_()
+    } catch (let __error) {
+      let __exceptionPtr = __error.toCpp()
+      return bridge.create_Result_void_(__exceptionPtr)
+    }
+  }
+  
+  @inline(__always)
   public final func setEventListener(listener: bridge.Func_void_SplashNativeEvent) -> bridge.Result_void_ {
     do {
       try self.__implementation.setEventListener(listener: { () -> (SplashNativeEvent) -> Void in

@@ -39,6 +39,7 @@ enum SplashManifest {
     let darkLogo: SplashLogoSpec? = (dict["hasDarkLogo"] as? Bool ?? false) ? logo : nil
 
     return SplashManifestSpec(
+      launchImage: nil,
       backgroundColor: backgroundColor,
       darkBackgroundColor: darkBackgroundColor,
       logo: logo,

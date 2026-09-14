@@ -1,10 +1,22 @@
 import { useContext, useLayoutEffect, useMemo, useRef } from 'react'
-import { Platform, useColorScheme } from 'react-native'
+import { Platform, useColorScheme, useWindowDimensions } from 'react-native'
 import type { ImageResizeMode, ImageStyle, ImageURISource, ViewStyle } from 'react-native'
 
 import { SplashOverlayContext } from './splash-context'
 import { SplashScreen } from './splash-screen'
-import type { SplashLogo, SplashManifest } from './types'
+import type { SplashLaunchImage, SplashLogo, SplashManifest } from './types'
+
+/**
+ * The box a launch image is drawn in: `min(width * fraction, maxWidth)` wide,
+ * `aspectRatio` tall. The native overlays apply the same rule
+ * (`SplashLaunchImageView` on iOS, `SplashOverlayView` on Android), which is
+ * what keeps the handoff pixel-identical.
+ */
+export function launchImageBox(image: SplashLaunchImage, windowWidth: number): { width: number; height: number } {
+  const width = Math.min(windowWidth * image.widthFraction, image.maxWidth)
+  const ratio = image.aspectRatio > 0 ? image.aspectRatio : 1
+  return { width, height: width / ratio }
+}
 
 export interface SplashMirrorOptions {
   /**
@@ -48,8 +60,15 @@ export function useSplashMirror(options: SplashMirrorOptions = {}): SplashMirror
   const context = useContext(SplashOverlayContext)
   const manifest = context?.manifest ?? SplashScreen.getManifest()
   const dark = useColorScheme() === 'dark'
+  const { width: windowWidth } = useWindowDimensions()
 
-  const logo = pickLogo(manifest, dark)
+  // With a launch image the picture *is* the mark and its paper is the
+  // manifest's; the compiled logo is not on screen at all.
+  const launchImage = manifest.launchImage
+  const logo = useMemo(
+    () => (launchImage ? launchImageLogo(launchImage, windowWidth) : pickLogo(manifest, dark)),
+    [launchImage, windowWidth, manifest, dark],
+  )
   const backgroundColor = dark ? (manifest.darkBackgroundColor ?? manifest.backgroundColor) : manifest.backgroundColor
 
   // Register the logo with the overlay exactly once per mount, and release it
@@ -66,7 +85,8 @@ export function useSplashMirror(options: SplashMirrorOptions = {}): SplashMirror
   }, [registerAsset, logo])
 
   return useMemo<SplashMirror>(() => {
-    const size = logo ? { width: logo.width * manifest.logoSizeRatio, height: logo.height * manifest.logoSizeRatio } : null
+    const ratio = launchImage ? 1 : manifest.logoSizeRatio
+    const size = logo ? { width: logo.width * ratio, height: logo.height * ratio } : null
     const insets = androidInsets(manifest, options)
     const done = () => {
       release.current?.()
@@ -97,7 +117,12 @@ export function useSplashMirror(options: SplashMirrorOptions = {}): SplashMirror
       backgroundColor,
       manifest,
     }
-  }, [logo, manifest, backgroundColor, options.statusBarTranslucent, options.navigationBarTranslucent])
+  }, [logo, launchImage, manifest, backgroundColor, options.statusBarTranslucent, options.navigationBarTranslucent])
+}
+
+function launchImageLogo(image: SplashLaunchImage, windowWidth: number): SplashLogo {
+  const box = launchImageBox(image, windowWidth)
+  return { name: image.uri, width: box.width, height: box.height }
 }
 
 function pickLogo(manifest: SplashManifest, dark: boolean): SplashLogo | undefined {

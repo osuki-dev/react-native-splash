@@ -21,7 +21,27 @@ export interface SplashLogo {
   height: number
 }
 
+/**
+ * A picture native shows instead of the compiled launch assets from the next
+ * cold start on: a theme's own artwork, for example. The OS-drawn launch
+ * screen still shows the compiled assets for its first frames.
+ */
+export interface SplashLaunchImage {
+  /** `file://` URI or absolute path of an image on disk. */
+  uri: string
+  backgroundColor: string
+  darkBackgroundColor?: string
+  /** Box width as a fraction of the window width. */
+  widthFraction: number
+  /** Box width cap in points / dp. */
+  maxWidth: number
+  /** Box width divided by height. */
+  aspectRatio: number
+}
+
 export interface SplashManifest {
+  /** The launch image in effect for this process, if the app set one. */
+  launchImage?: SplashLaunchImage
   backgroundColor: string
   darkBackgroundColor?: string
   logo?: SplashLogo
