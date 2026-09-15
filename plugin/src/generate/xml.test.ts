@@ -63,3 +63,21 @@ describe('setLauncherActivityTheme', () => {
     expect(out).toContain('<activity android:theme="@style/X" android:name=".MainActivity"')
   })
 })
+
+describe('removeTemplateLogoReferences', () => {
+  test('removes the template layer-list that draws the missing logo, and nothing else', async () => {
+    const fs = await import('node:fs')
+    const os = await import('node:os')
+    const path = await import('node:path')
+    const { removeTemplateLogoReferences } = await import('./android')
+    const res = fs.mkdtempSync(path.join(os.tmpdir(), 'osuki-splash-res-'))
+    fs.mkdirSync(path.join(res, 'drawable'))
+    const template = path.join(res, 'drawable', 'ic_launcher_background.xml')
+    fs.writeFileSync(template, '<layer-list><item><bitmap android:src="@drawable/splashscreen_logo"/></item></layer-list>')
+    removeTemplateLogoReferences(res)
+    expect(fs.existsSync(template)).toBe(false)
+    fs.writeFileSync(template, '<vector/>')
+    removeTemplateLogoReferences(res)
+    expect(fs.existsSync(template)).toBe(true)
+  })
+})
