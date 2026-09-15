@@ -65,6 +65,8 @@ export async function generateAndroidDrawables(ctx: AndroidGenerateContext, spla
     }
   }
 
+  if (!image) removeTemplateLogoReferences(ctx.resRoot)
+
   const runtime = path.join(ctx.resRoot, 'values', RUNTIME_RESOURCE_FILE)
   fs.mkdirSync(path.dirname(runtime), { recursive: true })
   fs.writeFileSync(runtime, buildRuntimeResources(splash))
@@ -97,4 +99,17 @@ export function splashStyleItems(splash: ResolvedSplash, hasLogo: boolean): Arra
   // API 33+: keep the icon even when the launcher asks for a plain colour.
   items.push({ name: 'android:windowSplashScreenBehavior', value: 'icon_preferred' })
   return items
+}
+
+/**
+ * Expo's prebuild template ships `drawable/ic_launcher_background.xml`, a
+ * layer-list that draws `@drawable/splashscreen_logo` and expects a splash
+ * plugin to have written that logo. Nothing references the file, so with no
+ * logo to point at it only breaks `processReleaseResources`; take it with
+ * the logo it was drawing.
+ */
+export function removeTemplateLogoReferences(resRoot: string): void {
+  const candidate = path.join(resRoot, 'drawable', 'ic_launcher_background.xml')
+  if (!fs.existsSync(candidate)) return
+  if (fs.readFileSync(candidate, 'utf8').includes(`@drawable/${LOGO_DRAWABLE}`)) fs.rmSync(candidate)
 }
