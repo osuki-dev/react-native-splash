@@ -1,5 +1,13 @@
 # @osuki-dev/react-native-splash
 
+## 0.2.2
+
+### Patch Changes
+
+- [#9](https://github.com/osuki-dev/react-native-splash/pull/9) [`e3ec30e`](https://github.com/osuki-dev/react-native-splash/commit/e3ec30ec07657e4c8ed812379e8f75425f3b9dc5) Thanks [@BANG88](https://github.com/BANG88)! - Android: a splash configured without an `image` now shows only the background colour. Without an explicit icon Android 12 falls back to the launcher icon, so a paper-only launch screen still flashed the app's mark before a themed overlay.
+
+- [#9](https://github.com/osuki-dev/react-native-splash/pull/9) [`e3ec30e`](https://github.com/osuki-dev/react-native-splash/commit/e3ec30ec07657e4c8ed812379e8f75425f3b9dc5) Thanks [@BANG88](https://github.com/BANG88)! - Android: with no `image` configured, the plugin also removes Expo's template `drawable/ic_launcher_background.xml`, which references the splash logo it no longer writes and made `processReleaseResources` fail with `resource drawable/splashscreen_logo not found`.
+
 ## 0.2.1
 
 ### Patch Changes
