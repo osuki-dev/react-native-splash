@@ -1,5 +1,11 @@
 # @osuki-dev/react-native-splash
 
+## 0.2.3
+
+### Patch Changes
+
+- [#12](https://github.com/osuki-dev/react-native-splash/pull/12) [`dca46d7`](https://github.com/osuki-dev/react-native-splash/commit/dca46d77be34a4a56cb3ace1885cceae9f9de9f5) Thanks [@BANG88](https://github.com/BANG88)! - fix(intros): add explicit 'worklet' directives to all intro animation callbacks and animated styles to prevent UI Runtime remote function crashes (#11)
+
 ## 0.2.2
 
 ### Patch Changes
