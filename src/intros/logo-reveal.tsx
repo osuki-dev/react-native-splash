@@ -49,6 +49,7 @@ export function LogoRevealIntro({ phase, finish, ringColor = '#FF6B4A', exitDura
     exit.value = withDelay(
       120,
       withTiming(1, { duration: exitDuration, easing: Easing.in(Easing.cubic) }, (finished) => {
+        'worklet'
         if (finished) scheduleOnRN(finish)
       }),
     )
@@ -56,15 +57,24 @@ export function LogoRevealIntro({ phase, finish, ringColor = '#FF6B4A', exitDura
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  const container = useAnimatedStyle(() => ({ opacity: 1 - exit.value }))
-  const logo = useAnimatedStyle(() => ({
-    transform: [{ scale: breathe.value * (1 + exit.value * 1.8) }],
-    opacity: 1 - exit.value,
-  }))
-  const ringStyle = useAnimatedStyle(() => ({
-    opacity: ring.value === 0 ? 0 : 0.5 * (1 - ring.value),
-    transform: [{ scale: 0.6 + ring.value * 3 }],
-  }))
+  const container = useAnimatedStyle(() => {
+    'worklet'
+    return { opacity: 1 - exit.value }
+  })
+  const logo = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ scale: breathe.value * (1 + exit.value * 1.8) }],
+      opacity: 1 - exit.value,
+    }
+  })
+  const ringStyle = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      opacity: ring.value === 0 ? 0 : 0.5 * (1 - ring.value),
+      transform: [{ scale: 0.6 + ring.value * 3 }],
+    }
+  })
 
   const size = typeof mirror.logo.style.width === 'number' ? mirror.logo.style.width : 100
   return (

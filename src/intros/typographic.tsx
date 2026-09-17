@@ -39,17 +39,24 @@ export function TypographicIntro({ phase, finish, colorScheme, words = DEFAULT_W
     }
     if (phase !== 'exiting') return
     curtain.value = withTiming(1, { duration: 700, easing: Easing.inOut(Easing.cubic) }, (finished) => {
+      'worklet'
       if (finished) scheduleOnRN(finish)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  const sheet = useAnimatedStyle(() => ({
-    transform: [{ translateY: -curtain.value * height }],
-  }))
-  const logo = useAnimatedStyle(() => ({
-    transform: [{ translateY: -lift.value * 90 }, { scale: 1 - lift.value * 0.25 }],
-  }))
+  const sheet = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ translateY: -curtain.value * height }],
+    }
+  })
+  const logo = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ translateY: -lift.value * 90 }, { scale: 1 - lift.value * 0.25 }],
+    }
+  })
 
   const ink = textColor ?? (colorScheme === 'dark' ? '#E6EAF0' : '#1A2027')
   return (
@@ -68,6 +75,7 @@ export function TypographicIntro({ phase, finish, colorScheme, words = DEFAULT_W
 
 function Word({ index, progress, style, children }: { index: number; progress: SharedValue<number>; style: StyleProp<TextStyle>; children: string }) {
   const animated = useAnimatedStyle(() => {
+    'worklet'
     const t = Math.min(1, Math.max(0, progress.value - index))
     return {
       opacity: t,
