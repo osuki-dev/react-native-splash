@@ -28,18 +28,25 @@ export function CircleRevealIntro({ phase, finish }: IntroProps) {
     if (phase !== 'exiting') return
     pop.value = withTiming(0, { duration: 420, easing: Easing.in(Easing.back(1.6)) })
     collapse.value = withTiming(1, { duration: 620, easing: Easing.in(Easing.cubic) }, (finished) => {
+      'worklet'
       if (finished) scheduleOnRN(finish)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
-  const circle = useAnimatedStyle(() => ({
-    transform: [{ scale: 1 - collapse.value }],
-  }))
-  const logo = useAnimatedStyle(() => ({
-    transform: [{ scale: pop.value }],
-    opacity: pop.value,
-  }))
+  const circle = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ scale: 1 - collapse.value }],
+    }
+  })
+  const logo = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ scale: pop.value }],
+      opacity: pop.value,
+    }
+  })
 
   return (
     // Transparent container: only the circle carries the splash colour.

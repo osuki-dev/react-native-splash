@@ -73,27 +73,38 @@ export function OnboardingIntro({
     }
     if (phase !== 'exiting') return
     exit.value = withTiming(1, { duration: 560, easing: Easing.in(Easing.cubic) }, (finished) => {
+      'worklet'
       if (finished) scheduleOnRN(finish)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase])
 
   const onScroll = useAnimatedScrollHandler((event) => {
+    'worklet'
     scrollX.value = event.contentOffset.x
   })
 
-  const container = useAnimatedStyle(() => ({
-    transform: [{ translateY: exit.value * height * 0.35 }],
-    opacity: 1 - exit.value,
-  }))
+  const container = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ translateY: exit.value * height * 0.35 }],
+      opacity: 1 - exit.value,
+    }
+  })
   // From the centred 1:1 mirror to a small header mark.
-  const logo = useAnimatedStyle(() => ({
-    transform: [{ translateY: -reveal.value * height * 0.33 }, { scale: 1 - reveal.value * 0.55 }],
-  }))
-  const sheet = useAnimatedStyle(() => ({
-    opacity: reveal.value,
-    transform: [{ translateY: (1 - reveal.value) * 60 }],
-  }))
+  const logo = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ translateY: -reveal.value * height * 0.33 }, { scale: 1 - reveal.value * 0.55 }],
+    }
+  })
+  const sheet = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      opacity: reveal.value,
+      transform: [{ translateY: (1 - reveal.value) * 60 }],
+    }
+  })
 
   const ink = colorScheme === 'dark' ? '#E6EAF0' : '#1A2027'
   const muted = colorScheme === 'dark' ? '#98A3B0' : '#5B6672'
@@ -156,17 +167,23 @@ function Page({
   muted: string
 }) {
   const range = [(index - 1) * width, index * width, (index + 1) * width]
-  const art = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: interpolate(scrollX.value, range, [width * 0.35, 0, -width * 0.35], Extrapolation.CLAMP) },
-      { rotateZ: `${interpolate(scrollX.value, range, [18, 0, -18], Extrapolation.CLAMP)}deg` },
-    ],
-    opacity: interpolate(scrollX.value, range, [0, 1, 0], Extrapolation.CLAMP),
-  }))
-  const text = useAnimatedStyle(() => ({
-    transform: [{ translateX: interpolate(scrollX.value, range, [width * 0.15, 0, -width * 0.15], Extrapolation.CLAMP) }],
-    opacity: interpolate(scrollX.value, range, [0, 1, 0], Extrapolation.CLAMP),
-  }))
+  const art = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [
+        { translateX: interpolate(scrollX.value, range, [width * 0.35, 0, -width * 0.35], Extrapolation.CLAMP) },
+        { rotateZ: `${interpolate(scrollX.value, range, [18, 0, -18], Extrapolation.CLAMP)}deg` },
+      ],
+      opacity: interpolate(scrollX.value, range, [0, 1, 0], Extrapolation.CLAMP),
+    }
+  })
+  const text = useAnimatedStyle(() => {
+    'worklet'
+    return {
+      transform: [{ translateX: interpolate(scrollX.value, range, [width * 0.15, 0, -width * 0.15], Extrapolation.CLAMP) }],
+      opacity: interpolate(scrollX.value, range, [0, 1, 0], Extrapolation.CLAMP),
+    }
+  })
   return (
     <View style={[styles.page, { width }]}>
       <Animated.View style={art}>
@@ -186,6 +203,7 @@ function Page({
 
 function Dot({ index, width, scrollX, color }: { index: number; width: number; scrollX: SharedValue<number>; color: string }) {
   const style = useAnimatedStyle(() => {
+    'worklet'
     const range = [(index - 1) * width, index * width, (index + 1) * width]
     return {
       width: interpolate(scrollX.value, range, [8, 26, 8], Extrapolation.CLAMP),
@@ -211,8 +229,14 @@ function ButtonLabel({
   color: string
 }) {
   const last = Math.max(1, pageCount - 1) * width
-  const nextStyle = useAnimatedStyle(() => ({ opacity: interpolate(scrollX.value, [last - width, last], [1, 0], Extrapolation.CLAMP) }))
-  const startStyle = useAnimatedStyle(() => ({ opacity: interpolate(scrollX.value, [last - width, last], [0, 1], Extrapolation.CLAMP) }))
+  const nextStyle = useAnimatedStyle(() => {
+    'worklet'
+    return { opacity: interpolate(scrollX.value, [last - width, last], [1, 0], Extrapolation.CLAMP) }
+  })
+  const startStyle = useAnimatedStyle(() => {
+    'worklet'
+    return { opacity: interpolate(scrollX.value, [last - width, last], [0, 1], Extrapolation.CLAMP) }
+  })
   return (
     <View style={styles.buttonLabel}>
       <Animated.Text style={[styles.buttonText, { color }, nextStyle]}>{next}</Animated.Text>
