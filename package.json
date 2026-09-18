@@ -1,6 +1,6 @@
 {
   "name": "@osuki-dev/react-native-splash",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Splash and intro screens for React Native and Expo. The native launch screen hands off to your own React view and Reanimated animation without a flash. Nitro Modules, Swift + Kotlin, no AppDelegate or MainActivity edits.",
   "main": "./lib/index.js",
   "module": "./lib/index.js",
