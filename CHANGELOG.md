@@ -1,5 +1,11 @@
 # @osuki-dev/react-native-splash
 
+## 0.4.0
+
+### Minor Changes
+
+- [#16](https://github.com/osuki-dev/react-native-splash/pull/16) [`9e9855b`](https://github.com/osuki-dev/react-native-splash/commit/9e9855b77c8cbd0b905517e9b3d1cbe6a3e38cf3) Thanks [@BANG88](https://github.com/BANG88)! - Add CyberpunkGlitch, AnimeComic, CreativeStudio, and PrismChromatic cinematic intro presets with full color, logo, and telemetry customizability.
+
 ## 0.3.0
 
 ### Minor Changes
