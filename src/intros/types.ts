@@ -13,6 +13,6 @@ import type { SplashRenderContext } from '../types'
  * state instead.
  */
 export interface IntroProps extends SplashRenderContext {
-  /** The user finished the intro (tapped "Get started"). */
-  onDone: () => void
+  /** The user finished the intro (tapped "Get started" or action button). Optional for non-interactive intros. */
+  onDone?: () => void
 }
