@@ -14,9 +14,10 @@ animation, a loading gate, a full onboarding flow.
   projects. Same options as `expo-splash-screen`, so migrating is a rename.
 - **Your animation library.** The package has no animation dependency. It tells
   you *when* (`phase`) and you tell it when you are done (`finish()`).
-- **Ready-made intros.** `@osuki-dev/react-native-splash/intros` ships four
-  Reanimated intros (logo reveal, circle reveal, typographic, swipeable
-  onboarding) that start from the exact launch-screen frame.
+- **Ready-made intros.** `@osuki-dev/react-native-splash/intros` ships twelve
+  Reanimated intros (Cyberpunk HUD, Anime Comic, Creative Studio, Prism Chromatic,
+  Split Curtain, Feature Showcase, Spatial Zoom, Modern Hero, and classic styles)
+  that start from the exact launch-screen frame.
 - **Nitro Modules**, Swift and Kotlin.
 
 Requirements: React Native 0.78+ with the New Architecture (the only
@@ -132,23 +133,27 @@ const [introDone, setIntroDone] = useState(false)
 </SplashOverlay>
 ```
 
-| Intro                  | What it does                                                                  | Props                                                                             |
-| ---------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `LogoRevealIntro`      | Logo breathes while loading, ring ripples out, scales into transparency.      | `ringColor`, `exitDuration`                                                       |
-| `CircleRevealIntro`    | The background collapses into the logo, revealing the app from the edges.    |                                                                                   |
-| `TypographicIntro`     | Logo lifts, a tagline lands word by word, the sheet exits like a curtain.     | `words`, `textColor`, `textStyle`                                                 |
-| `SplitCurtainIntro`    | Theatrical split-screen doors slide apart with center brand mark and beam.    | `direction`, `badge`, `title`, `subtitle`, `accentColor`, `exitDuration`          |
-| `FeatureShowcaseIntro` | Staggered cascade of rich feature cards with icons, badges and typography.    | `title`, `subtitle`, `features`, `interactive`, `buttonText`, `accentColor`       |
-| `ZoomFadeIntro`        | Elastic bounce and ambient halo with 3D camera fly-through zoom.              | `badge`, `title`, `tagline`, `mode`, `accentColor`, `maxZoomScale`, `exitDuration`|
-| `ModernHeroIntro`      | Staggered pill chips, typography, and directional screen split.               | `title`, `subtitle`, `tags`, `accentColor`, `showProgress`, `exitDuration`        |
-| `OnboardingIntro`      | Swipeable pages with parallax and dots; `onDone` fires on "Get started".      | `pages`, `nextLabel`, `startLabel`, `buttonColor`, `buttonTextColor`              |
+| Preview | Intro | Description & Style | Key Props |
+| :---: | :--- | :--- | :--- |
+| <img src="assets/screenshots/cyberpunk.png" width="160" alt="Cyberpunk HUD" /> | `CyberpunkGlitchIntro` | **Cyberpunk HUD**: Holographic HUD matrix grid, CRT scanline beam, neon RGB chromatic glitch displacement, live telemetry ticker, and laser collapse exit. | `colors` (`neonYellow`, `neonCyan`, `neonPink`, `background`), `hudCoordinates`, `telemetryTags`, `badge`, `title`, `subtitle`, `exitDuration` |
+| <img src="assets/screenshots/anime.png" width="160" alt="Anime Comic" /> | `AnimeComicIntro` | **Anime Comic**: Dynamic radial action speedlines, floating Sakura blossom petals, diagonal slash banner with Japanese Kanji eyebrow badge, and katana dash exit. | `colors` (`accent`, `accentSecondary`, `speedlines`, `background`), `japaneseBadge`, `title`, `subtitle`, `petalCount`, `exitDuration` |
+| <img src="assets/screenshots/studio.png" width="160" alt="Creative Studio" /> | `CreativeStudioIntro` | **Creative Studio**: Kinetic precision framing brackets (`┌ ┐ └ ┘`), dual rotating liquid aura mesh, live asset initialization ticker, and optical iris dissolve exit. | `colors` (`accent`, `auraColors`, `cardBackground`, `background`), `statusSteps`, `title`, `subtitle`, `showProgressBar`, `exitDuration` |
+| <img src="assets/screenshots/prism.png" width="160" alt="Prism Chromatic" /> | `PrismChromaticIntro` | **Prism Chromatic**: RGB chromatic aberration glitch, explosive shockwave ring, dynamic anamorphic lens flare beam, and optical iris burst. | `colors` (`chromaticCyan`, `chromaticRed`, `glow`, `background`), `badge`, `title`, `subtitle`, `exitDuration` |
+| <img src="assets/screenshots/split-curtain.png" width="160" alt="Split Curtain" /> | `SplitCurtainIntro` | **Split Curtain**: Theatrical split-screen doors slide apart horizontally or vertically with center brand mark, glowing beam, and eyebrow badge. | `direction`, `badge`, `title`, `subtitle`, `accentColor`, `beamColor`, `exitDuration` |
+| <img src="assets/screenshots/showcase.png" width="160" alt="Feature Showcase" /> | `FeatureShowcaseIntro` | **Feature Showcase**: Staggered cascading rich feature cards with icons, badges, and typography. Supports both automated timers and user-driven continue buttons. | `features`, `title`, `subtitle`, `interactive`, `buttonText`, `accentColor`, `exitDuration` |
+| <img src="assets/screenshots/spatial-zoom.png" width="160" alt="Spatial Zoom" /> | `ZoomFadeIntro` | **Spatial Zoom**: Elastic bounce with ambient glowing halo, camera fly-through zoom, or dramatic drop-away scale exit. | `mode`, `badge`, `title`, `tagline`, `accentColor`, `maxZoomScale`, `exitDuration` |
+| <img src="assets/screenshots/modern-hero.png" width="160" alt="Modern Hero" /> | `ModernHeroIntro` | **Modern Hero**: Staggered pill chips, typography entrance, bottom progress bar, and directional curtain split. | `title`, `subtitle`, `tags`, `accentColor`, `showProgress`, `exitDuration` |
+| <img src="assets/screenshots/logo-reveal.png" width="160" alt="Logo Reveal" /> | `LogoRevealIntro` | **Logo Reveal**: Minimalist brand mark breathes while loading, circular ripple ring pulses outward, then scales into transparency. | `ringColor`, `exitDuration` |
+| <img src="assets/screenshots/circle-reveal.png" width="160" alt="Circle Reveal" /> | `CircleRevealIntro` | **Circle Reveal**: The background collapses into the center logo as a shrinking circular mask, revealing the underlying app inward from the edges. | `exitDuration` |
+| <img src="assets/screenshots/typographic.png" width="160" alt="Typographic" /> | `TypographicIntro` | **Typographic**: Logo lifts upward as tagline copy lands word by word, then the entire sheet rolls up like a stage curtain. | `words`, `textColor`, `textStyle`, `exitDuration` |
+| <img src="assets/screenshots/onboarding.png" width="160" alt="Onboarding Flow" /> | `OnboardingIntro` | **Onboarding Flow**: Multi-page swipeable onboarding carousel with fluid parallax artwork and pagination indicator dots; finishes on "Get Started". | `pages`, `nextLabel`, `startLabel`, `buttonColor`, `buttonTextColor` |
 
 Every intro takes the overlay's render context plus `onDone`; interactive
 intros (`OnboardingIntro`, or `FeatureShowcaseIntro` with `interactive`) call it.
 For interactive intros pass `timeout={0}` (or a generous value): the default 15 s
 cap exists for loading gates and would cut a reader off mid-interaction. Their first
 frame is the launch-screen mirror, so the handoff stays seamless whichever one you
-pick. The example app switches between all eight at runtime through `SplashScreen.show()`.
+pick. The example app switches between all twelve at runtime through `SplashScreen.show()`.
 
 #### First launch vs returning user
 

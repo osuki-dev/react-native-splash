@@ -6,11 +6,15 @@ import type { ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, useColorScheme } from 'react-native'
 
 import {
+  AnimeComicIntro,
   CircleRevealIntro,
+  CreativeStudioIntro,
+  CyberpunkGlitchIntro,
   FeatureShowcaseIntro,
   LogoRevealIntro,
   ModernHeroIntro,
   OnboardingIntro,
+  PrismChromaticIntro,
   SplitCurtainIntro,
   TypographicIntro,
   ZoomFadeIntro,
@@ -21,7 +25,7 @@ import type { ComponentType } from 'react'
 // Module scope: content can appear before the first effect runs.
 SplashScreen.preventAutoHide()
 
-const LOADING_MS = 900
+const LOADING_MS = 2500
 
 interface IntroStyle {
   id: string
@@ -33,9 +37,93 @@ interface IntroStyle {
 }
 
 const INTROS: IntroStyle[] = [
-  { id: 'logo', title: 'Logo reveal', description: 'Breathes while loading, ripples and scales away.', interactive: false, component: LogoRevealIntro },
-  { id: 'circle', title: 'Circle reveal', description: 'The background collapses into the logo, revealing the app from the edges.', interactive: false, component: CircleRevealIntro },
-  { id: 'type', title: 'Typographic', description: 'Tagline lands word by word, then the sheet lifts like a curtain.', interactive: false, component: TypographicIntro },
+  {
+    id: 'cyber',
+    title: 'Cyberpunk HUD',
+    description: 'Holographic HUD matrix grid, CRT scanlines, neon glitch & laser collapse.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <CyberpunkGlitchIntro
+        {...props}
+        title="CYBERPUNK"
+        subtitle="NIGHT CITY // NETRUNNER"
+        badge="SYS://ONLINE"
+        hudCoordinates="SECTOR 04 // 0x7FA2"
+        telemetryTags={['CORE: ONLINE', 'SYNC: 99.8%', 'PORT: 8081']}
+        colors={{
+          background: '#08080C',
+          neonYellow: '#FFE600',
+          neonCyan: '#00F0FF',
+          neonPink: '#FF0055',
+        }}
+      />
+    ),
+  },
+  {
+    id: 'anime',
+    title: 'Anime comic',
+    description: 'Radial action speedlines, floating Sakura petals & diagonal banner slash.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <AnimeComicIntro
+        {...props}
+        title="NEO TOKYO"
+        subtitle="READY FOR ADVENTURE"
+        japaneseBadge="「 新次元の扉 」"
+        colors={{
+          background: '#0D0B18',
+          accent: '#FF4081',
+          accentSecondary: '#8C52FF',
+          speedlines: '#FF4081',
+        }}
+      />
+    ),
+  },
+  {
+    id: 'studio',
+    title: 'Creative studio',
+    description: 'Kinetic focus brackets, liquid aura mesh & live status ticker.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <CreativeStudioIntro
+        {...props}
+        title="CREATIVE STUDIO"
+        subtitle="v2026.4 • MOTION SUITE"
+        statusSteps={[
+          'Initializing GPU Pipeline...',
+          'Loading Creative Presets...',
+          'Calibrating Color Profiles...',
+          'Workspace Ready',
+        ]}
+        colors={{
+          background: '#0B0D17',
+          cardBackground: '#141727',
+          accent: '#6366F1',
+          auraColors: ['#4F46E5', '#D946EF'],
+        }}
+      />
+    ),
+  },
+  {
+    id: 'prism',
+    title: 'Prism chromatic',
+    description: 'RGB chromatic aberration glitch, shockwave ring & lens flare.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <PrismChromaticIntro
+        {...props}
+        badge="OPTICAL PIPELINE"
+        title="PRISM ENGINE"
+        subtitle="GPU-ACCELERATED MOTION CORE"
+        colors={{
+          background: '#07080E',
+          chromaticCyan: '#00F0FF',
+          chromaticRed: '#FF1F6D',
+          glow: '#00F0FF',
+        }}
+      />
+    ),
+  },
   {
     id: 'split',
     title: 'Split curtain',
@@ -91,6 +179,9 @@ const INTROS: IntroStyle[] = [
       />
     ),
   },
+  { id: 'logo', title: 'Logo reveal', description: 'Breathes while loading, ripples and scales away.', interactive: false, component: LogoRevealIntro },
+  { id: 'circle', title: 'Circle reveal', description: 'The background collapses into the logo, revealing the app from the edges.', interactive: false, component: CircleRevealIntro },
+  { id: 'type', title: 'Typographic', description: 'Tagline lands word by word, then the sheet lifts like a curtain.', interactive: false, component: TypographicIntro },
   { id: 'onboarding', title: 'Onboarding', description: 'Three swipeable pages with parallax; ready when you tap Get started.', interactive: true, component: OnboardingIntro },
 ]
 
