@@ -145,8 +145,8 @@ export function FeatureShowcaseIntro({
     'worklet'
     return {
       transform: [
-        { translateY: -lift.value * (height * 0.3) },
-        { scale: 1 - lift.value * 0.45 },
+        { translateY: -lift.value * (height * 0.38) },
+        { scale: 1 - lift.value * 0.52 },
       ],
     }
   })
@@ -176,7 +176,7 @@ export function FeatureShowcaseIntro({
       {mirror.hasLogo ? <Animated.Image {...mirror.logo} style={[mirror.logo.style, logo]} /> : null}
 
       {/* Main Content Area */}
-      <View style={[styles.contentWrapper, { top: height * 0.23, width }]}>
+      <View style={[styles.contentWrapper, { top: height * 0.20, width }]}>
         {/* Header Titles */}
         <Animated.View style={[styles.header, header]}>
           <Text style={[styles.title, { color: ink }]}>{title}</Text>

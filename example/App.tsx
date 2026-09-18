@@ -54,10 +54,11 @@ const INTROS: IntroStyle[] = [
     id: 'showcase',
     title: 'Feature showcase',
     description: 'Staggered cascade of rich feature cards with icons and typography.',
-    interactive: false,
+    interactive: true,
     component: (props: IntroProps) => (
       <FeatureShowcaseIntro
         {...props}
+        interactive
         title="What's New"
         subtitle="Experience faster transitions"
       />
