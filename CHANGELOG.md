@@ -1,5 +1,18 @@
 # @osuki-dev/react-native-splash
 
+## 0.3.0
+
+### Minor Changes
+
+- [#14](https://github.com/osuki-dev/react-native-splash/pull/14) [`a7ae69e`](https://github.com/osuki-dev/react-native-splash/commit/a7ae69ed9c64002b7974ef93b87b25951aac4e92) Thanks [@BANG88](https://github.com/BANG88)! - feat(intros): add SplitCurtain, FeatureShowcase, ZoomFade, and ModernHero intro presets
+
+  - Keep all existing intros intact (`LogoRevealIntro`, `CircleRevealIntro`, `TypographicIntro`, `OnboardingIntro`)
+  - Add `SplitCurtainIntro` for cinematic split-screen handoffs (horizontal or vertical)
+  - Add `FeatureShowcaseIntro` for rich card-based staggered feature highlights with optional interactive tap-to-continue
+  - Add `ZoomFadeIntro` for spatial camera fly-through zoom transitions with ambient pulsing rings
+  - Add `ModernHeroIntro` for modern hero typography with tag pills and directional exit
+  - Enforce explicit 'worklet' directives and safe thread dispatch via `scheduleOnRN` to prevent UI thread crashes
+
 ## 0.2.3
 
 ### Patch Changes
