@@ -60,6 +60,10 @@ const {
   FeatureShowcaseIntro,
   ZoomFadeIntro,
   ModernHeroIntro,
+  PrismChromaticIntro,
+  CreativeStudioIntro,
+  AnimeComicIntro,
+  CyberpunkGlitchIntro,
 } = await import('../intros')
 
 describe('Intros Export Suite', () => {
@@ -73,6 +77,10 @@ describe('Intros Export Suite', () => {
       FeatureShowcaseIntro,
       ZoomFadeIntro,
       ModernHeroIntro,
+      PrismChromaticIntro,
+      CreativeStudioIntro,
+      AnimeComicIntro,
+      CyberpunkGlitchIntro,
     ]
 
     for (const intro of intros) {

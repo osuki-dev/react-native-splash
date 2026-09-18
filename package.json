@@ -31,7 +31,8 @@
     "android/fix-prefab.gradle",
     "android/src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "!assets"
   ],
   "scripts": {
     "typecheck": "tsc --noEmit && tsc --noEmit -p plugin/tsconfig.json && tsc --noEmit -p cli/tsconfig.json",
