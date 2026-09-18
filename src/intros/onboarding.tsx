@@ -112,7 +112,7 @@ export function OnboardingIntro({
   const goNext = () => {
     const page = Math.round(scrollX.value / width)
     if (page >= pages.length - 1) {
-      onDone()
+      onDone?.()
       return
     }
     scrollRef.current?.scrollTo({ x: (page + 1) * width, animated: true })

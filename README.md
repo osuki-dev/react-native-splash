@@ -132,19 +132,23 @@ const [introDone, setIntroDone] = useState(false)
 </SplashOverlay>
 ```
 
-| Intro              | What it does                                                                 | Props                                             |
-| ------------------ | ---------------------------------------------------------------------------- | ------------------------------------------------- |
-| `LogoRevealIntro`  | Logo breathes while loading, ring ripples out, scales into transparency.     | `ringColor`, `exitDuration`                       |
-| `CircleRevealIntro`| The background collapses into the logo, revealing the app from the edges.   |                                                   |
-| `TypographicIntro` | Logo lifts, a tagline lands word by word, the sheet exits like a curtain.    | `words`, `textColor`, `textStyle`                 |
-| `OnboardingIntro`  | Swipeable pages with parallax and dots; `onDone` fires on "Get started".     | `pages`, `nextLabel`, `startLabel`, `buttonColor`, `buttonTextColor` |
+| Intro                  | What it does                                                                  | Props                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `LogoRevealIntro`      | Logo breathes while loading, ring ripples out, scales into transparency.      | `ringColor`, `exitDuration`                                                       |
+| `CircleRevealIntro`    | The background collapses into the logo, revealing the app from the edges.    |                                                                                   |
+| `TypographicIntro`     | Logo lifts, a tagline lands word by word, the sheet exits like a curtain.     | `words`, `textColor`, `textStyle`                                                 |
+| `SplitCurtainIntro`    | Theatrical split-screen doors slide apart with center brand mark and beam.    | `direction`, `badge`, `title`, `subtitle`, `accentColor`, `exitDuration`          |
+| `FeatureShowcaseIntro` | Staggered cascade of rich feature cards with icons, badges and typography.    | `title`, `subtitle`, `features`, `interactive`, `buttonText`, `accentColor`       |
+| `ZoomFadeIntro`        | Elastic bounce and ambient halo with 3D camera fly-through zoom.              | `badge`, `title`, `tagline`, `mode`, `accentColor`, `maxZoomScale`, `exitDuration`|
+| `ModernHeroIntro`      | Staggered pill chips, typography, and directional screen split.               | `title`, `subtitle`, `tags`, `accentColor`, `showProgress`, `exitDuration`        |
+| `OnboardingIntro`      | Swipeable pages with parallax and dots; `onDone` fires on "Get started".      | `pages`, `nextLabel`, `startLabel`, `buttonColor`, `buttonTextColor`              |
 
-Every intro takes the overlay's render context plus `onDone`; only
-`OnboardingIntro` calls it. For interactive intros pass `timeout={0}` (or a
-generous value): the default 15 s cap exists for loading gates and would cut
-a reader off mid-onboarding. Their first frame is the launch-screen mirror, so
-the handoff stays seamless whichever one you pick. The example app switches
-between all four at runtime through `SplashScreen.show()`.
+Every intro takes the overlay's render context plus `onDone`; interactive
+intros (`OnboardingIntro`, or `FeatureShowcaseIntro` with `interactive`) call it.
+For interactive intros pass `timeout={0}` (or a generous value): the default 15 s
+cap exists for loading gates and would cut a reader off mid-interaction. Their first
+frame is the launch-screen mirror, so the handoff stays seamless whichever one you
+pick. The example app switches between all eight at runtime through `SplashScreen.show()`.
 
 #### First launch vs returning user
 

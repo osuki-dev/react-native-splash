@@ -5,7 +5,16 @@ import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View, useColorScheme } from 'react-native'
 
-import { CircleRevealIntro, LogoRevealIntro, OnboardingIntro, TypographicIntro } from '@osuki-dev/react-native-splash/intros'
+import {
+  CircleRevealIntro,
+  FeatureShowcaseIntro,
+  LogoRevealIntro,
+  ModernHeroIntro,
+  OnboardingIntro,
+  SplitCurtainIntro,
+  TypographicIntro,
+  ZoomFadeIntro,
+} from '@osuki-dev/react-native-splash/intros'
 import type { IntroProps } from '@osuki-dev/react-native-splash/intros'
 import type { ComponentType } from 'react'
 
@@ -27,6 +36,60 @@ const INTROS: IntroStyle[] = [
   { id: 'logo', title: 'Logo reveal', description: 'Breathes while loading, ripples and scales away.', interactive: false, component: LogoRevealIntro },
   { id: 'circle', title: 'Circle reveal', description: 'The background collapses into the logo, revealing the app from the edges.', interactive: false, component: CircleRevealIntro },
   { id: 'type', title: 'Typographic', description: 'Tagline lands word by word, then the sheet lifts like a curtain.', interactive: false, component: TypographicIntro },
+  {
+    id: 'split',
+    title: 'Split curtain',
+    description: 'Theatrical split screen doors slide apart with center brand mark.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <SplitCurtainIntro
+        {...props}
+        badge="WELCOME"
+        title="Lumina Studio"
+        subtitle="Crafted for creators & modern teams."
+      />
+    ),
+  },
+  {
+    id: 'showcase',
+    title: 'Feature showcase',
+    description: 'Staggered cascade of rich feature cards with icons and typography.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <FeatureShowcaseIntro
+        {...props}
+        title="What's New"
+        subtitle="Experience faster transitions"
+      />
+    ),
+  },
+  {
+    id: 'zoom',
+    title: 'Spatial zoom',
+    description: 'Elastic bounce and ambient halo with camera fly-through zoom.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <ZoomFadeIntro
+        {...props}
+        badge="POWERED BY NITRO"
+        title="Spatial Engine"
+        tagline="Zero frame flash with instant native handoff."
+      />
+    ),
+  },
+  {
+    id: 'hero',
+    title: 'Modern hero',
+    description: 'Staggered pill chips, typography, and directional screen split.',
+    interactive: false,
+    component: (props: IntroProps) => (
+      <ModernHeroIntro
+        {...props}
+        title="Designed to Perform"
+        subtitle="Fast, resilient, and beautifully responsive."
+      />
+    ),
+  },
   { id: 'onboarding', title: 'Onboarding', description: 'Three swipeable pages with parallax; ready when you tap Get started.', interactive: true, component: OnboardingIntro },
 ]
 
